@@ -1,0 +1,42 @@
+export const storyPanels = [
+  {
+    id: 1,
+    image: 'story_panel1',
+    title: 'Breakfast Shapes!',
+    text: 'Oliver and Emma sit down for breakfast. Ms. Parker serves them tasty food. Oliver notices his plate is a perfect circle! Emma holds a piece of toast that is a rectangle.',
+    highlight: '🍽️ Circle plate (round) & 🍞 Rectangle toast (4 sides)',
+    mascot: 'Shapes are on our plates! Circles have no straight sides, but rectangles have four!',
+  },
+  {
+    id: 2,
+    image: 'story_panel2',
+    title: 'Fun at the Playground',
+    text: 'They run down to the playground. The sandpit is a large square. Near the slide, the tall climbing poles are cylinders. Oliver kicks a soccer ball—it is a round sphere!',
+    highlight: '🟨 Square sandpit, 💈 Cylinder poles, & ⚽ Sphere ball',
+    mascot: 'A sphere is completely round! A cylinder has two flat circles and one curved side!',
+  },
+  {
+    id: 3,
+    image: 'story_panel3',
+    title: 'Diner Discoveries',
+    text: 'For lunch, they visit a local cafe. Oliver spots a soup tin—it is a cylinder! Emma enjoys an ice cream cone, which is a cone. Oliver pulls a napkin from a tissue box, which is a cuboid.',
+    highlight: '🥫 Cylinder tin, 🍦 Cone, & 📦 Cuboid tissue box',
+    mascot: 'A cone has one flat circle face and one sharp point! A cuboid has six flat rectangular faces!',
+  },
+  {
+    id: 4,
+    image: 'story_panel4',
+    title: 'Walking Home',
+    text: 'On their way home, Emma spots a hexagonal drain cover with six sides. Oliver points to a triangular road sign. Behind them, an apartment block rises high like a giant cuboid!',
+    highlight: '🕸️ Hexagon drain cover (6 sides) & 🔺 Triangle sign (3 sides)',
+    mascot: 'A hexagon has six sides and six corners! Triangles have three sides and three corners!',
+  },
+  {
+    id: 5,
+    image: 'story_panel5',
+    title: 'Oliver and Emma\'s Shape Map!',
+    text: 'Oliver and Emma make a list of all 12 shapes they found today! They learned 6 flat 2D shapes and 6 solid 3D shapes. Now they see shapes everywhere!',
+    highlight: '🌟 6 2D Shapes + 6 3D Solids = 12 Geometry Masters!',
+    mascot: 'You are ready to search for shapes too! Let\'s go play and test your skills! 🚀',
+  },
+];
