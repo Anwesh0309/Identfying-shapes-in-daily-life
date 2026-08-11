@@ -1,11 +1,11 @@
 import { useEffect } from 'react';
-import { narrate } from '../../utils/audio.js';
-import { introNarration } from '../../utils/narration.js';
+import { stopNarration } from '../../utils/audio.js';
 
 export default function IntroPhase({ state, onStart }) {
+  // Silence narration during Intro phase only
   useEffect(() => {
-    if (state.audioEnabled) narrate(introNarration);
-  }, [state.audioEnabled]);
+    stopNarration();
+  }, []);
 
   const steps = [
     { icon: '🔍', label: 'Wonder',   sub: 'Spark your curiosity' },
@@ -15,14 +15,13 @@ export default function IntroPhase({ state, onStart }) {
     { icon: '📝', label: 'Reflect',  sub: 'What did you learn?' },
   ];
 
-  // Two rows: first 3, then 2 — mirrors the reference exactly
   const row1 = steps.slice(0, 3);
   const row2 = steps.slice(3);
 
   const featureCards = [
-    { icon: '📐', label: 'Count & Skip' },
-    { icon: '🧩', label: 'Simulations' },
-    { icon: '🏆', label: '3 Game Worlds' },
+    { icon: '📐', label: '2D & 3D Shapes' },
+    { icon: '🧪', label: '3 Interactive Stations' },
+    { icon: '🏆', label: '10 Game Worlds' },
   ];
 
   return (
@@ -33,22 +32,22 @@ export default function IntroPhase({ state, onStart }) {
       justifyContent: 'center',
       height: '100%',
       width: '100%',
-      padding: '0 20px 20px',
+      padding: 'clamp(48px, 6.5vh, 68px) clamp(16px, 3vw, 36px) clamp(12px, 1.8vh, 20px)',
       boxSizing: 'border-box',
       position: 'relative',
       zIndex: 10,
-      gap: 0,
+      gap: 'clamp(6px, 1.2vh, 14px)',
       overflow: 'hidden',
     }}>
 
-      {/* ── Floating background numbers (faded, same as reference) ── */}
+      {/* ── Floating background symbols ── */}
       {[
-        { val:'●', top:'8%',  left:'2%',  size:72, op:0.06 },
-        { val:'▲', top:'5%',  left:'18%', size:56, op:0.05 },
-        { val:'■', top:'6%',  right:'18%',size:60, op:0.05 },
-        { val:'⬡', top:'10%', right:'3%', size:68, op:0.06 },
-        { val:'⬟', top:'72%', left:'1%',  size:52, op:0.05 },
-        { val:'▬', top:'80%', right:'1%', size:58, op:0.05 },
+        { val:'●', top:'5%',  left:'3%',  size:90, op:0.07 },
+        { val:'▲', top:'3%',  left:'18%', size:70, op:0.06 },
+        { val:'■', top:'4%',  right:'18%',size:72, op:0.06 },
+        { val:'⬡', top:'7%', right:'3%', size:86, op:0.07 },
+        { val:'⬟', top:'76%', left:'2%',  size:64, op:0.06 },
+        { val:'▬', top:'83%', right:'2%', size:68, op:0.06 },
       ].map((d, i) => (
         <span key={i} style={{
           position: 'absolute',
@@ -63,116 +62,116 @@ export default function IntroPhase({ state, onStart }) {
         }}>{d.val}</span>
       ))}
 
-      {/* ── 1. Badge pill — exact match to reference ── */}
+      {/* ── Badge pill ── */}
       <div style={{
-        background: 'rgba(255,255,255,0.09)',
-        border: '1px solid rgba(255,255,255,0.18)',
-        borderRadius: 20,
-        padding: '5px 16px',
+        background: 'rgba(255,255,255,0.12)',
+        border: '1.5px solid rgba(255,255,255,0.25)',
+        borderRadius: 26,
+        padding: '7px 22px',
         display: 'inline-flex',
         alignItems: 'center',
-        gap: 7,
-        marginBottom: 14,
+        gap: 8,
+        flexShrink: 0,
+        boxShadow: '0 4px 14px rgba(0,0,0,0.15)',
       }}>
-        <span style={{ fontSize: 14 }}>✨</span>
+        <span style={{ fontSize: 18 }}>✨</span>
         <span style={{
           fontFamily: 'Nunito, sans-serif',
           fontWeight: 800,
-          fontSize: 13,
-          color: 'rgba(255,255,255,0.85)',
-          letterSpacing: '0.3px',
+          fontSize: 'clamp(14px, 1.6vw, 16px)',
+          color: 'rgba(255,255,255,0.95)',
+          letterSpacing: '0.4px',
         }}>
           MOE Curriculum · Grade 2
         </span>
       </div>
 
-      {/* ── 2. Main title — exact reference sizing/weight ── */}
+      {/* ── Main title ── */}
       <h1 style={{
         fontFamily: 'Fredoka One, sans-serif',
-        fontSize: 'clamp(32px, 5vw, 48px)',
+        fontSize: 'clamp(40px, 6vw, 62px)',
         fontWeight: 900,
         color: '#ffffff',
-        margin: '0 0 18px 0',
-        lineHeight: 1.1,
+        margin: 0,
+        lineHeight: 1.08,
         textAlign: 'center',
         letterSpacing: '-0.5px',
+        flexShrink: 0,
+        textShadow: '0 4px 20px rgba(0,0,0,0.35)',
       }}>
         Identifying &amp; <span style={{ color: '#facc15' }}>Shapes</span>
       </h1>
 
-      {/* ── 3. Mascot + speech bubble — side by side, reference treatment ── */}
+      {/* ── Mascot + speech bubble ── */}
       <div style={{
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        gap: 14,
-        marginBottom: 16,
+        gap: 18,
+        flexShrink: 0,
       }}>
-        {/* Yellow circle mascot */}
         <div style={{
-          width: 56,
-          height: 56,
+          width: 70,
+          height: 70,
           borderRadius: '50%',
           backgroundColor: '#facc15',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          fontSize: 32,
-          boxShadow: '0 4px 16px rgba(250,204,21,0.4)',
+          fontSize: 40,
+          boxShadow: '0 6px 22px rgba(250,204,21,0.5)',
           flexShrink: 0,
         }}>🐻</div>
 
-        {/* White speech bubble */}
         <div style={{
           background: '#ffffff',
           color: '#1a0f4e',
-          borderRadius: '14px 14px 14px 4px',
-          padding: '10px 18px',
+          borderRadius: '18px 18px 18px 4px',
+          padding: '12px 24px',
           fontFamily: 'Fredoka One, sans-serif',
-          fontSize: 14,
+          fontSize: 'clamp(15px, 1.8vw, 18px)',
           lineHeight: 1.35,
-          boxShadow: '0 6px 20px rgba(0,0,0,0.18)',
-          maxWidth: 210,
+          boxShadow: '0 8px 26px rgba(0,0,0,0.25)',
           whiteSpace: 'nowrap',
         }}>
           Ready for a shape adventure? 📐
         </div>
       </div>
 
-      {/* ── 4. Description text — reference width / weight ── */}
+      {/* ── Description text ── */}
       <p style={{
         fontFamily: 'Nunito, sans-serif',
-        fontWeight: 600,
-        fontSize: 'clamp(12px, 1.5vw, 14px)',
-        color: 'rgba(255,255,255,0.7)',
-        maxWidth: 440,
-        margin: '0 0 18px 0',
+        fontWeight: 700,
+        fontSize: 'clamp(15px, 1.9vw, 18px)',
+        color: 'rgba(255,255,255,0.88)',
+        maxWidth: 620,
+        margin: 0,
         textAlign: 'center',
-        lineHeight: 1.55,
+        lineHeight: 1.45,
+        flexShrink: 0,
       }}>
         Join Oliver and Emma on a journey to identify, classify, and explore shapes in daily life through stories, simulations, and fun games!
       </p>
 
-      {/* ── 5. Learning Journey card — reference card width/height/style ── */}
+      {/* ── Learning Journey card ── */}
       <div style={{
-        width: 'min(88%, 510px)',
-        background: 'rgba(18, 12, 52, 0.65)',
-        border: '1px solid rgba(255,255,255,0.1)',
-        borderRadius: 18,
-        padding: '16px 22px 14px',
+        width: 'min(94%, 640px)',
+        background: 'rgba(18, 12, 52, 0.75)',
+        border: '1.5px solid rgba(255,255,255,0.18)',
+        borderRadius: 22,
+        padding: '16px 28px 14px',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
         gap: 12,
-        marginBottom: 18,
-        boxShadow: '0 4px 24px rgba(0,0,0,0.25)',
+        boxShadow: '0 8px 32px rgba(0,0,0,0.32)',
+        flexShrink: 0,
       }}>
-        {/* Card label */}
         <span style={{
           fontFamily: 'Fredoka One, sans-serif',
-          fontSize: 11,
+          fontSize: 13,
           color: '#facc15',
-          letterSpacing: '2px',
+          letterSpacing: '2.5px',
           textTransform: 'uppercase',
         }}>YOUR LEARNING JOURNEY</span>
 
@@ -181,20 +180,20 @@ export default function IntroPhase({ state, onStart }) {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          gap: 10,
+          gap: 14,
           width: '100%',
         }}>
           {row1.map((s, i) => (
-            <div key={s.label} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                <span style={{ fontSize: 16, lineHeight: 1 }}>{s.icon}</span>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                  <span style={{ fontFamily: 'Fredoka One', fontSize: 11, color: '#fff', lineHeight: 1 }}>{s.label}</span>
-                  <span style={{ fontFamily: 'Nunito', fontSize: 8, color: 'rgba(255,255,255,0.38)', fontWeight: 800, lineHeight: 1 }}>{s.sub}</span>
+            <div key={s.label} style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <span style={{ fontSize: 22, lineHeight: 1 }}>{s.icon}</span>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                  <span style={{ fontFamily: 'Fredoka One', fontSize: 14, color: '#fff', lineHeight: 1 }}>{s.label}</span>
+                  <span style={{ fontFamily: 'Nunito', fontSize: 10, color: 'rgba(255,255,255,0.5)', fontWeight: 800, lineHeight: 1 }}>{s.sub}</span>
                 </div>
               </div>
               {i < row1.length - 1 && (
-                <span style={{ color: 'rgba(255,255,255,0.22)', fontSize: 11, marginLeft: 2 }}>—→</span>
+                <span style={{ color: 'rgba(255,255,255,0.35)', fontSize: 14, marginLeft: 2 }}>—→</span>
               )}
             </div>
           ))}
@@ -205,27 +204,27 @@ export default function IntroPhase({ state, onStart }) {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          gap: 10,
+          gap: 14,
           width: '100%',
         }}>
           {row2.map((s, i) => (
-            <div key={s.label} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                <span style={{ fontSize: 16, lineHeight: 1 }}>{s.icon}</span>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                  <span style={{ fontFamily: 'Fredoka One', fontSize: 11, color: '#fff', lineHeight: 1 }}>{s.label}</span>
-                  <span style={{ fontFamily: 'Nunito', fontSize: 8, color: 'rgba(255,255,255,0.38)', fontWeight: 800, lineHeight: 1 }}>{s.sub}</span>
+            <div key={s.label} style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <span style={{ fontSize: 22, lineHeight: 1 }}>{s.icon}</span>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                  <span style={{ fontFamily: 'Fredoka One', fontSize: 14, color: '#fff', lineHeight: 1 }}>{s.label}</span>
+                  <span style={{ fontFamily: 'Nunito', fontSize: 10, color: 'rgba(255,255,255,0.5)', fontWeight: 800, lineHeight: 1 }}>{s.sub}</span>
                 </div>
               </div>
               {i < row2.length - 1 && (
-                <span style={{ color: 'rgba(255,255,255,0.22)', fontSize: 11, marginLeft: 2 }}>—→</span>
+                <span style={{ color: 'rgba(255,255,255,0.35)', fontSize: 14, marginLeft: 2 }}>—→</span>
               )}
             </div>
           ))}
         </div>
       </div>
 
-      {/* ── 6. CTA button — reference exact treatment ── */}
+      {/* ── CTA button ── */}
       <button
         onClick={onStart}
         className="pulse"
@@ -233,53 +232,54 @@ export default function IntroPhase({ state, onStart }) {
           background: 'linear-gradient(135deg, #fde047 0%, #facc15 55%, #eab308 100%)',
           border: 'none',
           borderRadius: 50,
-          padding: '14px 48px',
+          padding: '16px 60px',
           color: '#1a0f4e',
           fontFamily: 'Fredoka One, sans-serif',
-          fontSize: 17,
+          fontSize: 'clamp(18px, 2vw, 21px)',
           fontWeight: 900,
           cursor: 'pointer',
-          boxShadow: '0 6px 28px rgba(250,204,21,0.5)',
+          boxShadow: '0 8px 36px rgba(250,204,21,0.6)',
           display: 'flex',
           alignItems: 'center',
-          gap: 10,
-          marginBottom: 18,
-          letterSpacing: '0.2px',
+          gap: 12,
+          letterSpacing: '0.4px',
           transition: 'transform 0.15s, box-shadow 0.15s',
+          flexShrink: 0,
         }}
-        onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.03)'; e.currentTarget.style.boxShadow = '0 8px 36px rgba(250,204,21,0.65)'; }}
-        onMouseLeave={e => { e.currentTarget.style.transform = 'scale(1)'; e.currentTarget.style.boxShadow = '0 6px 28px rgba(250,204,21,0.5)'; }}
+        onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.04)'; e.currentTarget.style.boxShadow = '0 12px 44px rgba(250,204,21,0.75)'; }}
+        onMouseLeave={e => { e.currentTarget.style.transform = 'scale(1)'; e.currentTarget.style.boxShadow = '0 8px 36px rgba(250,204,21,0.6)'; }}
       >
-        <span style={{ fontSize: 18 }}>🚀</span>
+        <span style={{ fontSize: 22 }}>🚀</span>
         <span>Begin Your Journey!</span>
       </button>
 
-      {/* ── 7. Bottom 3 feature cards — reference grid/size ── */}
+      {/* ── Bottom 3 feature cards ── */}
       <div style={{
         display: 'grid',
         gridTemplateColumns: 'repeat(3, 1fr)',
-        gap: 12,
-        width: 'min(88%, 510px)',
+        gap: 14,
+        width: 'min(94%, 640px)',
+        flexShrink: 0,
       }}>
         {featureCards.map(c => (
           <div key={c.label} style={{
-            background: 'rgba(255,255,255,0.055)',
-            border: '1px solid rgba(255,255,255,0.1)',
-            borderRadius: 14,
-            padding: '14px 8px 12px',
+            background: 'rgba(255,255,255,0.08)',
+            border: '1.5px solid rgba(255,255,255,0.14)',
+            borderRadius: 18,
+            padding: '14px 12px',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
-            gap: 8,
-            boxShadow: '0 2px 12px rgba(0,0,0,0.18)',
+            gap: 6,
+            boxShadow: '0 4px 18px rgba(0,0,0,0.22)',
           }}>
-            <span style={{ fontSize: 26 }}>{c.icon}</span>
+            <span style={{ fontSize: 28 }}>{c.icon}</span>
             <span style={{
               fontFamily: 'Nunito, sans-serif',
-              fontWeight: 700,
-              fontSize: 12,
-              color: 'rgba(255,255,255,0.75)',
+              fontWeight: 800,
+              fontSize: 'clamp(12px, 1.4vw, 14px)',
+              color: 'rgba(255,255,255,0.9)',
               textAlign: 'center',
               lineHeight: 1.2,
             }}>{c.label}</span>

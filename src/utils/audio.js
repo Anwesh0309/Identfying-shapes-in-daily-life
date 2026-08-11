@@ -92,9 +92,11 @@ async function _narrateFrom(segments, startIndex) {
 
     const url = await getAudioUrl(text, style);
     
+    // Strict check after async fetch
     if (activeQueueId !== myId || !_audioEnabled) {
       if (!_audioEnabled) pausedSegments = { segments, index: i };
-      break;
+      _stopCurrent();
+      return;
     }
 
     // Preload next segment to eliminate delay
@@ -105,15 +107,20 @@ async function _narrateFrom(segments, startIndex) {
       }
     }
 
+    // Always ensure prior audio is stopped before starting a new clip
+    _stopCurrent();
+
     if (!url) {
       // Fallback: Web Speech API
       await new Promise(resolve => {
         if (activeQueueId !== myId || !_audioEnabled) return resolve();
         
         try {
+          if ('speechSynthesis' in window) {
+            window.speechSynthesis.cancel();
+          }
           const utterance = new SpeechSynthesisUtterance(text);
           const voices = window.speechSynthesis.getVoices();
-          // Prefer high-quality English voice
           const enVoice = voices.find(v => v.lang.startsWith('en') && v.name.includes('Google')) ||
                           voices.find(v => v.lang.startsWith('en') && v.name.includes('Natural')) ||
                           voices.find(v => v.lang.startsWith('en')) ||
@@ -123,8 +130,14 @@ async function _narrateFrom(segments, startIndex) {
           utterance.rate = 0.95; // child friendly speed
           utterance.pitch = 1.05; // slightly higher pitch
           
-          utterance.onend = resolve;
-          utterance.onerror = resolve;
+          const onDone = () => {
+            utterance.onend = null;
+            utterance.onerror = null;
+            resolve();
+          };
+
+          utterance.onend = onDone;
+          utterance.onerror = onDone;
           
           window.speechSynthesis.speak(utterance);
         } catch (err) {
@@ -134,15 +147,28 @@ async function _narrateFrom(segments, startIndex) {
     } else {
       // Play pre-generated or cached ElevenLabs URL
       await new Promise(resolve => {
+        if (activeQueueId !== myId || !_audioEnabled) return resolve();
+
         const audio = new Audio(url);
         currentAudio = audio;
-        audio.onended = resolve;
-        audio.onerror = resolve;
-        audio.play().catch(() => resolve());
+        
+        const cleanup = () => {
+          audio.onended = null;
+          audio.onerror = null;
+          if (currentAudio === audio) currentAudio = null;
+          resolve();
+        };
+
+        audio.onended = cleanup;
+        audio.onerror = cleanup;
+        audio.play().catch(() => cleanup());
       });
     }
 
-    if (activeQueueId !== myId) break;
+    if (activeQueueId !== myId) {
+      _stopCurrent();
+      break;
+    }
   }
 
   if (activeQueueId === myId) {
@@ -155,10 +181,19 @@ function _stopCurrent() {
   if (currentAudio) {
     try {
       currentAudio.pause();
-      currentAudio.src = '';
+      currentAudio.currentTime = 0;
+      currentAudio.onended = null;
+      currentAudio.onerror = null;
+      currentAudio.removeAttribute('src');
+      currentAudio.load();
     } catch (e) {}
     currentAudio = null;
   }
+  try {
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+    }
+  } catch (e) {}
 }
 
 // Slugify string for mapping key
@@ -186,7 +221,7 @@ async function getAudioUrl(text, style = 'statement') {
   }
 
   // Dynamic API call fallback via serverless proxy or directly if key is local
-  const apiKey = import.meta.env.VITE_ELEVENLABS_API_KEY || 'sk_7ef27dccb32144843f8ee5068dfd4223a85326c56c14b00a';
+  const apiKey = import.meta.env.VITE_ELEVENLABS_API_KEY || 'sk_0af55b573c54fe31387443150c45624fed865ccc914cd486';
   if (!apiKey) return null;
 
   try {

@@ -2,13 +2,13 @@ const STEPS = [
   { id: 'wonder',   label: 'Wonder',   num: '01', icon: '🔍' },
   { id: 'story',    label: 'Story',    num: '02', icon: '📖' },
   { id: 'simulate', label: 'Simulate', num: '03', icon: '🧪' },
-  { id: 'play',     label: 'Play',     num: '04', icon: '🎮' },
+  { id: 'play',     label: 'Practice', num: '04', icon: '🎮' },
   { id: 'reflect',  label: 'Reflect',  num: '05', icon: '📝' },
 ];
 
 const ORDER = ['intro', 'wonder', 'story', 'simulate', 'play', 'reflect', 'results'];
 
-export default function ProgressMap({ currentPhase, phaseComplete }) {
+export default function ProgressMap({ currentPhase, phaseComplete, onSelectPhase }) {
   const phaseIdx = ORDER.indexOf(currentPhase);
 
   return (
@@ -19,27 +19,26 @@ export default function ProgressMap({ currentPhase, phaseComplete }) {
         alignItems: 'center',
         gap: 'clamp(6px, 1.2vw, 12px)',
         justifyContent: 'center',
-        background: 'rgba(10, 8, 32, 0.75)',
-        border: '1.5px solid rgba(255, 255, 255, 0.1)',
+        background: 'rgba(10, 8, 32, 0.85)',
+        border: '1.5px solid rgba(255, 255, 255, 0.2)',
         borderRadius: 50,
         padding: '6px clamp(14px, 2.5vw, 24px)',
-        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.55)',
+        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.65)',
         backdropFilter: 'blur(16px)',
         WebkitBackdropFilter: 'blur(16px)',
         flexShrink: 0,
       }}
     >
       {STEPS.map((step, i) => {
-        const stepIdx    = ORDER.indexOf(step.id);
         const isActive   = currentPhase === step.id;
-        const isComplete = phaseComplete[step.id] || stepIdx < phaseIdx;
+        const isComplete = phaseComplete?.[step.id];
 
         /* Circle styles */
         const circleBg = isActive
           ? '#facc15'
           : isComplete
           ? '#22c55e'
-          : 'rgba(255, 255, 255, 0.05)';
+          : 'rgba(255, 255, 255, 0.15)';
         const circleColor = isActive
           ? '#0f0a2e'
           : '#fff';
@@ -47,24 +46,40 @@ export default function ProgressMap({ currentPhase, phaseComplete }) {
           ? 'none'
           : isComplete
           ? 'none'
-          : '2px solid rgba(255, 255, 255, 0.2)';
+          : '2px solid rgba(255, 255, 255, 0.35)';
 
-        /* Label styling */
+        /* Label styling — high contrast extra bold */
         const labelColor = isActive
           ? '#facc15'
           : isComplete
-          ? '#22c55e'
-          : 'rgba(255, 255, 255, 0.35)';
+          ? '#4ade80'
+          : '#ffffff';
+        const labelOpacity = isActive ? 1 : isComplete ? 0.95 : 0.75;
 
         return (
           <div key={step.id} style={{ display: 'flex', alignItems: 'center', gap: 'clamp(6px, 1.2vw, 12px)' }}>
-            {/* Step node */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+            {/* Step node button */}
+            <button
+              onClick={() => onSelectPhase && onSelectPhase(step.id)}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 6,
+                background: 'none',
+                border: 'none',
+                padding: 0,
+                cursor: 'pointer',
+                transition: 'transform 0.2s',
+              }}
+              onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.08)'}
+              onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
+              title={`Go to ${step.label}`}
+            >
               {/* Numbered circle or tick */}
               <div
                 style={{
-                  width: 24,
-                  height: 24,
+                  width: 26,
+                  height: 26,
                   borderRadius: '50%',
                   background: circleBg,
                   border: circleBorder,
@@ -73,15 +88,15 @@ export default function ProgressMap({ currentPhase, phaseComplete }) {
                   justifyContent: 'center',
                   fontFamily: 'Fredoka One, sans-serif',
                   fontWeight: 900,
-                  fontSize: 11,
+                  fontSize: 12,
                   color: circleColor,
                   flexShrink: 0,
                   transition: 'all 0.3s',
-                  boxShadow: isActive ? '0 0 12px rgba(250, 204, 21, 0.4)' : 'none',
+                  boxShadow: isActive ? '0 0 14px rgba(250, 204, 21, 0.6)' : 'none',
                 }}
               >
                 {isComplete ? (
-                  <span style={{ fontSize: 13, fontWeight: 900 }}>✓</span>
+                  <span style={{ fontSize: 14, fontWeight: 900 }}>✓</span>
                 ) : (
                   step.num
                 )}
@@ -92,29 +107,31 @@ export default function ProgressMap({ currentPhase, phaseComplete }) {
                 style={{
                   fontFamily: 'Fredoka One, sans-serif',
                   fontWeight: 900,
-                  fontSize: 'clamp(11px, 1.3vw, 13px)',
+                  fontSize: 'clamp(12px, 1.3vw, 14px)',
                   color: labelColor,
+                  opacity: labelOpacity,
                   whiteSpace: 'nowrap',
-                  transition: 'color 0.3s',
+                  transition: 'all 0.3s',
                   display: 'flex',
                   alignItems: 'center',
                   gap: 4,
+                  textShadow: isActive ? '0 0 10px rgba(250, 204, 21, 0.4)' : 'none',
                 }}
               >
                 <span>{step.icon}</span>
                 <span>{step.label}</span>
               </span>
-            </div>
+            </button>
 
             {/* Connecting Line */}
             {i < STEPS.length - 1 && (
               <div
                 style={{
-                  width: 'clamp(12px, 2.5vw, 32px)',
-                  height: 2,
+                  width: 'clamp(10px, 2vw, 24px)',
+                  height: 2.5,
                   background: isComplete || (isActive && ORDER.indexOf(STEPS[i+1].id) <= phaseIdx)
-                    ? 'rgba(34, 197, 94, 0.6)'
-                    : 'rgba(255, 255, 255, 0.1)',
+                    ? 'rgba(34, 197, 94, 0.8)'
+                    : 'rgba(255, 255, 255, 0.25)',
                   flexShrink: 0,
                   transition: 'background 0.3s',
                 }}

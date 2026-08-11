@@ -3,16 +3,18 @@ import { CheckCircle, Sparkles } from 'lucide-react';
 import { narrate, say, sfxCorrect, sfxLevelUp } from '../../utils/audio.js';
 import { wonderNarration } from '../../utils/narration.js';
 import { shapes } from '../../data/shapeData.js';
+import wonderRoomBg from '../../assets/wonder_room_bg.png';
+import wonderIntroBg from '../../assets/wonder_intro_bg.png';
 
-// The 6 targets — positions match the reference image (indoor cozy attic scene)
+// The 6 targets — positions align with the high quality wonderRoomBg image
 const WONDER_TARGETS = [
   {
     id: 'circle',
     label: 'Wall Clock',
     emoji: '⏰',
     shapeId: 'circle',
-    top: '12%',
-    left: '10%',
+    top: '20%',
+    left: '18.5%',
     glowColor: '#fb7185',
     desc: 'The round clock on the wall is a circle!',
     narrationText: 'Look at the wall clock! It is a circle. Circles are perfectly round and have no straight sides or corners.'
@@ -22,8 +24,8 @@ const WONDER_TARGETS = [
     label: 'Clipboard',
     emoji: '📋',
     shapeId: 'rectangle',
-    top: '18%',
-    left: '44%',
+    top: '25.5%',
+    left: '46%',
     glowColor: '#38bdf8',
     desc: 'The clipboard or document shape is a rectangle!',
     narrationText: 'Look at the clipboard! It is a rectangle. Rectangles have four straight sides where opposite sides are equal, and four corners.'
@@ -33,10 +35,10 @@ const WONDER_TARGETS = [
     label: 'Square Tile',
     emoji: '⬜',
     shapeId: 'square',
-    top: '62%',
-    left: '54%',
+    top: '67%',
+    left: '56%',
     glowColor: '#4ade80',
-    desc: 'The square tile on the floor is a perfect square!',
+    desc: 'The square tile on the desk is a perfect square!',
     narrationText: 'Look at the square tile! It is a square. Squares have four straight sides that are all equal in length, and four corners.'
   },
   {
@@ -44,10 +46,10 @@ const WONDER_TARGETS = [
     label: 'Warning Sign',
     emoji: '⚠️',
     shapeId: 'triangle',
-    top: '25%',
-    left: '76%',
+    top: '33.5%',
+    left: '77.5%',
     glowColor: '#facc15',
-    desc: 'The warning sign is a triangle!',
+    desc: 'The warning sign banner is a triangle!',
     narrationText: 'Look at the warning sign! It is a triangle. Triangles have three straight sides and three pointy corners.'
   },
   {
@@ -55,8 +57,8 @@ const WONDER_TARGETS = [
     label: 'Spider Web',
     emoji: '🕸️',
     shapeId: 'hexagon',
-    top: '52%',
-    left: '12%',
+    top: '58%',
+    left: '14%',
     glowColor: '#a78bfa',
     desc: 'The spider web pattern is made of hexagons!',
     narrationText: 'Look at the spider web! Its cells form hexagons. A hexagon has six straight sides and six corners.'
@@ -66,8 +68,8 @@ const WONDER_TARGETS = [
     label: 'Cross Sign',
     emoji: '➕',
     shapeId: 'pentagon',
-    top: '40%',
-    left: '38%',
+    top: '47%',
+    left: '40.5%',
     glowColor: '#34d399',
     desc: 'The plus / cross sign here represents a special shape with multiple sides!',
     narrationText: 'Look at the cross sign! It shows how shapes can combine. A pentagon has five sides and five corners.'
@@ -136,32 +138,34 @@ export default function WonderPhase({ state, onComplete }) {
           boxSizing: 'border-box',
           zIndex: 10,
           position: 'relative',
-          gap: 'clamp(10px, 2.5vh, 24px)',
+          gap: 'clamp(12px, 2.5vh, 24px)',
+          overflow: 'hidden',
         }}
       >
         {/* Question mark circle */}
         <div
           style={{
-            width: 'clamp(80px, 12vh, 120px)',
-            height: 'clamp(80px, 12vh, 120px)',
+            width: 'clamp(80px, 12vh, 110px)',
+            height: 'clamp(80px, 12vh, 110px)',
             borderRadius: '50%',
             background: 'linear-gradient(135deg, #a78bfa 0%, #818cf8 100%)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            fontSize: 'clamp(36px, 5vh, 52px)',
+            fontSize: 'clamp(40px, 6vh, 56px)',
             color: '#fff',
             fontFamily: 'Fredoka One, sans-serif',
             fontWeight: 900,
-            boxShadow: '0 8px 32px rgba(129, 140, 248, 0.3)',
+            boxShadow: '0 8px 32px rgba(129, 140, 248, 0.4)',
             animation: 'float 3s infinite ease-in-out',
+            flexShrink: 0,
           }}
         >
           ?
         </div>
 
         {/* Bear Mascot speaking */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexShrink: 0 }}>
           <div
             style={{
               width: 'clamp(44px, 6vh, 56px)',
@@ -171,8 +175,8 @@ export default function WonderPhase({ state, onComplete }) {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              fontSize: 'clamp(24px, 3vh, 32px)',
-              boxShadow: '0 6px 18px rgba(250, 204, 21, 0.3)',
+              fontSize: 'clamp(24px, 3.5vh, 32px)',
+              boxShadow: '0 6px 18px rgba(250, 204, 21, 0.4)',
             }}
           >
             🐻
@@ -182,55 +186,68 @@ export default function WonderPhase({ state, onComplete }) {
               background: '#fff',
               color: '#1a0f4e',
               borderRadius: '16px 16px 16px 4px',
-              padding: '8px 16px',
+              padding: '10px 18px',
               fontFamily: 'Fredoka One, sans-serif',
-              fontSize: 'clamp(12px, 1.8vh, 14px)',
-              boxShadow: '0 8px 20px rgba(0, 0, 0, 0.2)',
+              fontWeight: 900,
+              fontSize: 'clamp(14px, 2vh, 17px)',
+              boxShadow: '0 8px 20px rgba(0, 0, 0, 0.25)',
             }}
           >
             Hmm... I wonder... 🧐
           </div>
         </div>
 
-        {/* Central question card */}
+        {/* Central question card with high quality generated background */}
         <div
           className="glass-card"
           style={{
-            width: 'min(90%, 550px)',
-            padding: 'clamp(20px, 3.5vh, 32px)',
+            width: 'min(90%, 580px)',
+            padding: 'clamp(22px, 3.5vh, 36px)',
             borderRadius: 24,
+            display: 'flex',
+            flexDirection: 'column',
             alignItems: 'center',
             textAlign: 'center',
             gap: 16,
-            backgroundColor: 'rgba(30, 20, 70, 0.55)',
-            border: '1.5px solid rgba(255, 255, 255, 0.1)',
+            backgroundImage: `linear-gradient(180deg, rgba(20, 14, 50, 0.75) 0%, rgba(30, 20, 70, 0.88) 100%), url(${wonderIntroBg})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            border: '2px solid rgba(255, 255, 255, 0.25)',
+            boxShadow: '0 16px 48px rgba(0,0,0,0.5)',
+            flexShrink: 0,
           }}
         >
-          <span style={{ fontSize: 40 }}>📐</span>
+          <span style={{ fontSize: 44 }}>📐</span>
           
           <h2
             style={{
               fontFamily: 'Fredoka One, sans-serif',
-              fontSize: 'clamp(18px, 2.5vh, 24px)',
-              color: '#fff',
+              fontWeight: 900,
+              fontSize: 'clamp(19px, 2.8vh, 26px)',
+              color: '#ffffff',
               margin: 0,
-              lineHeight: 1.3,
+              lineHeight: 1.35,
+              textShadow: '0 2px 8px rgba(0,0,0,0.3)',
             }}
           >
-            Where can we find circles, triangles, and cylinders around us? Can you spot shapes in daily life?
+            Where can we find <span style={{ color: '#facc15' }}>circles</span>, <span style={{ color: '#38bdf8' }}>triangles</span>, and <span style={{ color: '#4ade80' }}>cylinders</span> around us? Can you spot shapes in daily life?
           </h2>
 
-          <p
+          <div
             style={{
-              fontFamily: 'Nunito, sans-serif',
-              fontStyle: 'italic',
-              fontSize: 'clamp(12px, 1.8vh, 14px)',
-              color: 'rgba(255, 255, 255, 0.65)',
+              background: 'rgba(250, 204, 21, 0.15)',
+              border: '1.5px dashed rgba(250, 204, 21, 0.5)',
+              borderRadius: 14,
+              padding: '8px 16px',
+              fontFamily: 'Fredoka One, sans-serif',
+              fontWeight: 900,
+              fontSize: 'clamp(13px, 1.9vh, 16px)',
+              color: '#fde047',
               margin: 0,
             }}
           >
-            Shapes are hiding all around us in the playground!
-          </p>
+            🔍 Shapes are hiding all around us in the playground!
+          </div>
         </div>
 
         {/* Discovery button */}
@@ -241,17 +258,18 @@ export default function WonderPhase({ state, onComplete }) {
             background: 'linear-gradient(135deg, #a78bfa 0%, #818cf8 100%)',
             border: 'none',
             borderRadius: 50,
-            padding: 'clamp(10px, 1.8vh, 14px) clamp(30px, 6vw, 60px)',
+            padding: 'clamp(12px, 2vh, 16px) clamp(32px, 6vw, 64px)',
             color: '#fff',
             fontFamily: 'Fredoka One, sans-serif',
-            fontSize: 'clamp(14px, 2.2vh, 18px)',
+            fontSize: 'clamp(16px, 2.4vh, 20px)',
             fontWeight: 900,
             cursor: 'pointer',
-            boxShadow: '0 8px 24px rgba(129, 140, 248, 0.4)',
+            boxShadow: '0 8px 24px rgba(129, 140, 248, 0.5)',
             display: 'flex',
             alignItems: 'center',
-            gap: 8,
+            gap: 10,
             transition: 'all 0.2s',
+            flexShrink: 0,
           }}
         >
           <span>✨</span>
@@ -285,122 +303,73 @@ export default function WonderPhase({ state, onComplete }) {
           overflow: 'hidden',
           display: 'flex',
           flexDirection: 'column',
-          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
-          border: '1px solid rgba(255, 255, 255, 0.15)',
+          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)',
+          border: '1.5px solid rgba(255, 255, 255, 0.2)',
         }}
       >
         {/* Header bar */}
         <div
           style={{
-            padding: '12px 16px',
-            background: 'rgba(15, 10, 46, 0.65)',
-            borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
+            padding: '12px 18px',
+            background: 'rgba(15, 10, 46, 0.85)',
+            borderBottom: '1.5px solid rgba(255, 255, 255, 0.15)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
             zIndex: 10,
+            flexShrink: 0,
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <span style={{ fontSize: 20 }}>🏃</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <span style={{ fontSize: 24 }}>🏃</span>
             <div>
-              <h3 style={{ fontFamily: 'Fredoka One, sans-serif', color: '#fff', margin: 0, fontSize: 15 }}>
+              <h3 style={{ fontFamily: 'Fredoka One, sans-serif', fontWeight: 900, color: '#fff', margin: 0, fontSize: 16 }}>
                 Shape Discovery Scene
               </h3>
-              <p style={{ fontFamily: 'Nunito, sans-serif', color: 'rgba(255,255,255,0.6)', margin: 0, fontSize: 11 }}>
+              <p style={{ fontFamily: 'Fredoka One, sans-serif', fontWeight: 900, color: '#facc15', margin: 0, fontSize: 12 }}>
                 Find all 6 glowing shapes in the scene!
               </p>
             </div>
           </div>
           <div
             style={{
-              background: isAllFound ? 'rgba(34, 197, 94, 0.2)' : 'rgba(250, 204, 21, 0.15)',
-              border: isAllFound ? '1px solid #22c55e' : '1px solid #facc15',
+              background: isAllFound ? 'rgba(34, 197, 94, 0.3)' : 'rgba(250, 204, 21, 0.25)',
+              border: isAllFound ? '2px solid #22c55e' : '2px solid #facc15',
               color: isAllFound ? '#4ade80' : '#facc15',
-              padding: '4px 12px',
-              borderRadius: 15,
-              fontSize: 12,
+              padding: '6px 14px',
+              borderRadius: 20,
+              fontSize: 13,
               fontFamily: 'Fredoka One, sans-serif',
+              fontWeight: 900,
             }}
           >
             {isAllFound ? '🎉 ALL FOUND!' : `🔎 FOUND: ${discovered.length} / 6`}
           </div>
         </div>
 
-        {/* Visual Scene Area — Cozy Indoor Attic/Adventure Room */}
+        {/* Visual Scene Area — High Quality Generated Room Background Image (Adjusted 100% fit) */}
         <div
           style={{
             flex: 1,
             position: 'relative',
             overflow: 'hidden',
-            background: 'linear-gradient(180deg, #2a1a0e 0%, #3d2410 30%, #4a2e14 60%, #5c3a1a 100%)',
+            backgroundImage: `url(${wonderRoomBg})`,
+            backgroundSize: '100% 100%',
+            backgroundRepeat: 'no-repeat',
+            backgroundPosition: 'center center',
           }}
         >
-          {/* Warm ambient light overlay */}
-          <div style={{ position:'absolute', inset:0, background:'radial-gradient(ellipse at 65% 40%, rgba(255,160,50,0.18) 0%, transparent 65%)', pointerEvents:'none' }} />
+          {/* Subtle warm ambient vignette overlay */}
+          <div style={{ position:'absolute', inset:0, background:'radial-gradient(ellipse at 50% 50%, rgba(15,10,35,0.15) 0%, rgba(10,5,25,0.4) 100%)', pointerEvents:'none' }} />
           {/* Fairy lights string top */}
-          <div style={{ position:'absolute', top:'6%', left:0, right:0, height:2, background:'transparent', pointerEvents:'none' }}>
+          <div style={{ position:'absolute', top:'4%', left:0, right:0, height:2, background:'transparent', pointerEvents:'none' }}>
             {[4,12,20,28,36,44,52,60,68,76,84,92].map((l,i) => (
-              <div key={i} style={{ position:'absolute', left:`${l}%`, top:0, width:5, height:5, borderRadius:'50%',
+              <div key={i} style={{ position:'absolute', left:`${l}%`, top:0, width:6, height:6, borderRadius:'50%',
                 background: i%3===0?'#ffd700':i%3===1?'#ff9f40':'#ff6b9d',
-                boxShadow:`0 0 6px ${i%3===0?'#ffd700':i%3===1?'#ff9f40':'#ff6b9d'}`,
+                boxShadow:`0 0 8px ${i%3===0?'#ffd700':i%3===1?'#ff9f40':'#ff6b9d'}`,
                 animation:'wonderPulse 2s infinite ease-in-out', animationDelay:`${i*0.2}s` }} />
             ))}
           </div>
-          {/* Wooden floor */}
-          <div style={{ position:'absolute', bottom:0, left:0, right:0, height:'28%',
-            background:'linear-gradient(180deg, #5c3a1a 0%, #4a2e10 100%)',
-            borderTop:'2px solid rgba(255,180,80,0.2)' }}>
-            {[0,15,30,45,60,75,90].map((l,i) => (
-              <div key={i} style={{ position:'absolute', left:`${l}%`, top:0, bottom:0, width:1,
-                background:'rgba(0,0,0,0.15)' }} />
-            ))}
-          </div>
-          {/* Round rug on floor */}
-          <div style={{ position:'absolute', bottom:'14%', left:'28%',
-            width:'44%', height:'14%', borderRadius:'50%',
-            background:'radial-gradient(ellipse, rgba(160,50,30,0.55) 0%, rgba(100,30,20,0.3) 70%, transparent 100%)',
-            border:'1px solid rgba(200,80,40,0.3)' }} />
-          {/* Bookshelf right side */}
-          <div style={{ position:'absolute', right:'4%', top:'8%', width:'14%', height:'55%',
-            background:'rgba(80,40,15,0.7)', border:'1px solid rgba(120,70,20,0.5)', borderRadius:4 }}>
-            {[15,28,41,54,67].map((t,i) => (
-              <div key={i} style={{ position:'absolute', top:`${t}%`, left:'8%', right:'8%', height:'8%',
-                background:`rgba(${[180,60,40][i%3]},${[80,120,100][i%3]},${[40,160,140][i%3]},0.6)`, borderRadius:2 }} />
-            ))}
-          </div>
-          {/* Tent/canopy bottom right */}
-          <div style={{ position:'absolute', bottom:'22%', right:'6%',
-            width:0, height:0,
-            borderLeft:'55px solid transparent', borderRight:'55px solid transparent',
-            borderBottom:'70px solid rgba(70,100,180,0.45)' }} />
-          <div style={{ position:'absolute', bottom:'22%', right:'0%',
-            width:'22%', height:'28%',
-            background:'rgba(60,80,160,0.25)', borderRadius:'0 0 8px 0',
-            border:'1px solid rgba(100,130,220,0.2)' }} />
-          {/* Warm lamp glow bottom center */}
-          <div style={{ position:'absolute', bottom:'24%', left:'44%',
-            width:28, height:28, borderRadius:'50%',
-            background:'radial-gradient(circle, #ffe580 0%, #ffa500 60%, transparent 100%)',
-            boxShadow:'0 0 30px 10px rgba(255,180,60,0.3)' }} />
-          {/* Ladder left side */}
-          <div style={{ position:'absolute', left:'12%', top:'5%', bottom:'26%', width:3,
-            background:'rgba(140,80,30,0.6)', borderRadius:2 }}>
-            {[20,35,50,65,80].map((t,i) => (
-              <div key={i} style={{ position:'absolute', top:`${t}%`, left:-8, width:19, height:2,
-                background:'rgba(140,80,30,0.5)', borderRadius:1 }} />
-            ))}
-          </div>
-          {/* Panda toy bottom left */}
-          <div style={{ position:'absolute', bottom:'27%', left:'18%', fontSize:28, opacity:0.7 }}>🐼</div>
-          {/* Telescope */}
-          <div style={{ position:'absolute', bottom:'27%', left:'46%', fontSize:24, opacity:0.6 }}>🔭</div>
-          {/* Potted plant */}
-          <div style={{ position:'absolute', bottom:'27%', right:'22%', fontSize:24, opacity:0.7 }}>🪴</div>
-          {/* Window ambient light top right */}
-          <div style={{ position:'absolute', top:'5%', right:'18%', width:'12%', height:'22%',
-            background:'rgba(255,220,150,0.12)', border:'1px solid rgba(255,200,100,0.2)', borderRadius:4 }} />
-
           {/* Interactive glowing target pins */}
           {WONDER_TARGETS.map(target => {
             const isFound = discovered.includes(target.id);
@@ -415,19 +384,19 @@ export default function WonderPhase({ state, onComplete }) {
                   position: 'absolute',
                   top: target.top,
                   left: target.left,
-                  width: 'clamp(42px, 5.5vh, 56px)',
-                  height: 'clamp(42px, 5.5vh, 56px)',
+                  width: 'clamp(44px, 5.5vh, 58px)',
+                  height: 'clamp(44px, 5.5vh, 58px)',
                   borderRadius: '50%',
                   background: isFound ? `${targetColor}33` : isSelected ? `${targetColor}44` : 'rgba(10,6,26,0.65)',
-                  border: `2.5px solid ${targetColor}`,
+                  border: `3px solid ${targetColor}`,
                   boxShadow: isFound
-                    ? `0 0 12px ${targetColor}88, inset 0 0 8px ${targetColor}22`
-                    : `0 0 18px ${targetColor}99, 0 0 30px ${targetColor}44`,
+                    ? `0 0 14px ${targetColor}bb, inset 0 0 8px ${targetColor}44`
+                    : `0 0 20px ${targetColor}ff, 0 0 35px ${targetColor}66`,
                   cursor: 'pointer',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  fontSize: 'clamp(18px, 2.8vh, 24px)',
+                  fontSize: 'clamp(20px, 2.8vh, 26px)',
                   zIndex: isSelected ? 20 : 10,
                   transition: 'all 0.3s cubic-bezier(0.175,0.885,0.32,1.275)',
                   animation: !isFound ? 'wonderPulse 2s infinite ease-in-out' : 'none',
@@ -437,11 +406,11 @@ export default function WonderPhase({ state, onComplete }) {
                 {isFound && !isSelected && (
                   <div style={{
                     position: 'absolute', top: -4, right: -4,
-                    background: '#22c55e', borderRadius: '50%', width: 15, height: 15,
+                    background: '#22c55e', borderRadius: '50%', width: 16, height: 16,
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    border: '1.5px solid #fff', boxShadow: '0 2px 6px rgba(34,197,94,0.5)'
+                    border: '2px solid #fff', boxShadow: '0 2px 6px rgba(34,197,94,0.6)'
                   }}>
-                    <CheckCircle size={9} color="#fff" />
+                    <CheckCircle size={10} color="#fff" strokeWidth={3} />
                   </div>
                 )}
                 <span>{target.emoji}</span>
@@ -457,13 +426,14 @@ export default function WonderPhase({ state, onComplete }) {
         style={{
           flex: 1,
           borderRadius: 20,
-          padding: 'clamp(16px, 3vh, 24px)',
+          padding: 'clamp(14px, 2.5vh, 20px)',
           display: 'flex',
           flexDirection: 'column',
-          gap: 16,
-          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
-          border: '1px solid rgba(255, 255, 255, 0.15)',
-          overflowY: 'auto',
+          gap: 12,
+          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)',
+          border: '1.5px solid rgba(255, 255, 255, 0.2)',
+          backgroundColor: 'rgba(25, 18, 60, 0.75)',
+          overflow: 'hidden',
           justifyContent: selectedTarget ? 'flex-start' : 'center',
           alignItems: selectedTarget ? 'stretch' : 'center',
           textAlign: selectedTarget ? 'left' : 'center',
@@ -472,30 +442,32 @@ export default function WonderPhase({ state, onComplete }) {
         {selectedTarget ? (
           <>
             {/* Shape Title */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexShrink: 0 }}>
               <div
                 style={{
                   width: 48,
                   height: 48,
-                  borderRadius: 12,
-                  background: `rgba(${parseInt(currentShape.color.slice(1,3),16)}, ${parseInt(currentShape.color.slice(3,5),16)}, ${parseInt(currentShape.color.slice(5,7),16)}, 0.15)`,
-                  border: `1px solid ${currentShape.color}`,
+                  borderRadius: 14,
+                  background: `rgba(${parseInt(currentShape.color.slice(1,3),16)}, ${parseInt(currentShape.color.slice(3,5),16)}, ${parseInt(currentShape.color.slice(5,7),16)}, 0.25)`,
+                  border: `2px solid ${currentShape.color}`,
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  fontSize: 24,
+                  fontSize: 26,
+                  boxShadow: `0 0 12px ${currentShape.glow}`,
                 }}
               >
                 {selectedTarget.emoji}
               </div>
               <div>
-                <h2 style={{ fontFamily: 'Fredoka One, sans-serif', color: '#fff', margin: 0, fontSize: 18 }}>
+                <h2 style={{ fontFamily: 'Fredoka One, sans-serif', fontWeight: 900, color: '#fff', margin: 0, fontSize: 20 }}>
                   {currentShape.name}
                 </h2>
                 <span
                   style={{
                     fontFamily: 'Fredoka One, sans-serif',
-                    fontSize: 10,
+                    fontWeight: 900,
+                    fontSize: 11,
                     color: currentShape.color,
                     textTransform: 'uppercase',
                     letterSpacing: '1px',
@@ -506,25 +478,25 @@ export default function WonderPhase({ state, onComplete }) {
               </div>
             </div>
 
-            <div style={{ height: 1, background: 'rgba(255,255,255,0.1)' }} />
+            <div style={{ height: 1, background: 'rgba(255,255,255,0.15)', flexShrink: 0 }} />
 
             {/* Shape Attributes */}
-            <div style={{ display: 'flex', gap: 12 }}>
+            <div style={{ display: 'flex', gap: 10, flexShrink: 0 }}>
               <div style={{
-                flex: 1, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)',
-                borderRadius: 12, padding: '10px 6px', textAlign: 'center'
+                flex: 1, background: 'rgba(255,255,255,0.06)', border: '1.5px solid rgba(255,255,255,0.15)',
+                borderRadius: 14, padding: '8px 6px', textAlign: 'center'
               }}>
-                <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.5)', display: 'block', marginBottom: 2, fontFamily: 'Fredoka One' }}>SIDES</span>
-                <span style={{ fontFamily: 'Fredoka One, sans-serif', fontSize: 20, color: currentShape.color }}>
+                <span style={{ fontSize: 11, color: '#fff', display: 'block', marginBottom: 2, fontFamily: 'Fredoka One', fontWeight: 900 }}>SIDES</span>
+                <span style={{ fontFamily: 'Fredoka One, sans-serif', fontWeight: 900, fontSize: 24, color: currentShape.color }}>
                   {currentShape.sides}
                 </span>
               </div>
               <div style={{
-                flex: 1, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)',
-                borderRadius: 12, padding: '10px 6px', textAlign: 'center'
+                flex: 1, background: 'rgba(255,255,255,0.06)', border: '1.5px solid rgba(255,255,255,0.15)',
+                borderRadius: 14, padding: '8px 6px', textAlign: 'center'
               }}>
-                <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.5)', display: 'block', marginBottom: 2, fontFamily: 'Fredoka One' }}>CORNERS</span>
-                <span style={{ fontFamily: 'Fredoka One, sans-serif', fontSize: 20, color: currentShape.color }}>
+                <span style={{ fontSize: 11, color: '#fff', display: 'block', marginBottom: 2, fontFamily: 'Fredoka One', fontWeight: 900 }}>CORNERS</span>
+                <span style={{ fontFamily: 'Fredoka One, sans-serif', fontWeight: 900, fontSize: 24, color: currentShape.color }}>
                   {currentShape.corners}
                 </span>
               </div>
@@ -533,60 +505,62 @@ export default function WonderPhase({ state, onComplete }) {
             {/* SVG Visual rendering */}
             <div
               style={{
-                height: 110,
-                background: 'rgba(10, 8, 32, 0.4)',
-                border: '1px solid rgba(255,255,255,0.05)',
+                height: 90,
+                background: 'rgba(10, 8, 32, 0.5)',
+                border: '1.5px solid rgba(255,255,255,0.15)',
                 borderRadius: 16,
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 position: 'relative',
+                flexShrink: 0,
               }}
             >
-              <svg width="80" height="80" viewBox="0 0 100 100">
+              <svg width="70" height="70" viewBox="0 0 100 100">
                 {selectedTarget.shapeId === 'circle' && (
-                  <circle cx="50" cy="50" r="38" fill="none" stroke={currentShape.color} strokeWidth="6" filter={`drop-shadow(0 0 8px ${currentShape.glow})`} />
+                  <circle cx="50" cy="50" r="38" fill="none" stroke={currentShape.color} strokeWidth="7" filter={`drop-shadow(0 0 10px ${currentShape.glow})`} />
                 )}
                 {selectedTarget.shapeId === 'triangle' && (
-                  <polygon points="50,15 15,80 85,80" fill="none" stroke={currentShape.color} strokeWidth="6" filter={`drop-shadow(0 0 8px ${currentShape.glow})`} />
+                  <polygon points="50,15 15,80 85,80" fill="none" stroke={currentShape.color} strokeWidth="7" filter={`drop-shadow(0 0 10px ${currentShape.glow})`} />
                 )}
                 {selectedTarget.shapeId === 'rectangle' && (
-                  <rect x="15" y="25" width="70" height="50" fill="none" stroke={currentShape.color} strokeWidth="6" filter={`drop-shadow(0 0 8px ${currentShape.glow})`} />
+                  <rect x="15" y="25" width="70" height="50" fill="none" stroke={currentShape.color} strokeWidth="7" filter={`drop-shadow(0 0 10px ${currentShape.glow})`} />
                 )}
                 {selectedTarget.shapeId === 'square' && (
-                  <rect x="20" y="20" width="60" height="60" fill="none" stroke={currentShape.color} strokeWidth="6" filter={`drop-shadow(0 0 8px ${currentShape.glow})`} />
+                  <rect x="20" y="20" width="60" height="60" fill="none" stroke={currentShape.color} strokeWidth="7" filter={`drop-shadow(0 0 10px ${currentShape.glow})`} />
                 )}
                 {selectedTarget.shapeId === 'pentagon' && (
-                  <polygon points="50,15 88,43 74,85 26,85 12,43" fill="none" stroke={currentShape.color} strokeWidth="6" filter={`drop-shadow(0 0 8px ${currentShape.glow})`} />
+                  <polygon points="50,15 88,43 74,85 26,85 12,43" fill="none" stroke={currentShape.color} strokeWidth="7" filter={`drop-shadow(0 0 10px ${currentShape.glow})`} />
                 )}
                 {selectedTarget.shapeId === 'hexagon' && (
-                  <polygon points="50,12 85,31 85,69 50,88 15,69 15,31" fill="none" stroke={currentShape.color} strokeWidth="6" filter={`drop-shadow(0 0 8px ${currentShape.glow})`} />
+                  <polygon points="50,12 85,31 85,69 50,88 15,69 15,31" fill="none" stroke={currentShape.color} strokeWidth="7" filter={`drop-shadow(0 0 10px ${currentShape.glow})`} />
                 )}
               </svg>
             </div>
 
             {/* Description */}
-            <div>
-              <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.4)', fontFamily: 'Fredoka One, sans-serif' }}>WHAT IT IS:</span>
-              <p style={{ fontFamily: 'Nunito, sans-serif', fontSize: 13, color: '#fff', margin: '4px 0 0 0', lineHeight: 1.4 }}>
+            <div style={{ flexShrink: 0 }}>
+              <span style={{ fontSize: 11, color: '#facc15', fontFamily: 'Fredoka One, sans-serif', fontWeight: 900 }}>WHAT IT IS:</span>
+              <p style={{ fontFamily: 'Fredoka One, sans-serif', fontWeight: 900, fontSize: 14, color: '#ffffff', margin: '3px 0 0 0', lineHeight: 1.35 }}>
                 {selectedTarget.desc}
               </p>
             </div>
 
-            <div>
-              <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.4)', fontFamily: 'Fredoka One, sans-serif' }}>REAL WORLD EXAMPLES:</span>
+            <div style={{ flexShrink: 0 }}>
+              <span style={{ fontSize: 11, color: '#38bdf8', fontFamily: 'Fredoka One, sans-serif', fontWeight: 900 }}>REAL WORLD EXAMPLES:</span>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 4 }}>
                 {currentShape.examples.map((ex, idx) => (
                   <span
                     key={idx}
                     style={{
-                      background: 'rgba(255, 255, 255, 0.05)',
-                      border: '1px solid rgba(255, 255, 255, 0.1)',
+                      background: 'rgba(255, 255, 255, 0.12)',
+                      border: '1.5px solid rgba(255, 255, 255, 0.25)',
                       borderRadius: 12,
                       padding: '4px 10px',
-                      fontSize: 11,
-                      color: 'rgba(255,255,255,0.85)',
-                      fontFamily: 'Nunito, sans-serif'
+                      fontSize: 12,
+                      color: '#ffffff',
+                      fontFamily: 'Fredoka One, sans-serif',
+                      fontWeight: 900,
                     }}
                   >
                     {ex}
@@ -603,11 +577,11 @@ export default function WonderPhase({ state, onComplete }) {
                 style={{
                   background: 'linear-gradient(135deg, #fde047 0%, #facc15 50%, #eab308 100%)',
                   border: 'none',
-                  borderRadius: 16,
-                  padding: '13px 20px',
+                  borderRadius: 18,
+                  padding: '12px 20px',
                   color: '#1a0f4e',
                   fontFamily: 'Fredoka One, sans-serif',
-                  fontSize: 15,
+                  fontSize: 16,
                   fontWeight: 900,
                   cursor: 'pointer',
                   marginTop: 'auto',
@@ -615,22 +589,23 @@ export default function WonderPhase({ state, onComplete }) {
                   alignItems: 'center',
                   justifyContent: 'center',
                   gap: 8,
-                  boxShadow: '0 8px 24px rgba(250,204,21,0.55)',
+                  boxShadow: '0 8px 24px rgba(250,204,21,0.6)',
+                  flexShrink: 0,
                 }}
               >
-                <Sparkles size={16} />
+                <Sparkles size={18} />
                 Continue to Story ✨
               </button>
             )}
           </>
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
-            <div style={{ fontSize: 44, animation: 'float 3s infinite ease-in-out' }}>🔎</div>
-            <h3 style={{ fontFamily: 'Fredoka One, sans-serif', color: '#fff', margin: 0, fontSize: 16 }}>
+            <div style={{ fontSize: 48, animation: 'float 3s infinite ease-in-out' }}>🔎</div>
+            <h3 style={{ fontFamily: 'Fredoka One, sans-serif', fontWeight: 900, color: '#fff', margin: 0, fontSize: 18 }}>
               Start Inspecting!
             </h3>
-            <p style={{ fontFamily: 'Nunito, sans-serif', color: 'rgba(255,255,255,0.6)', margin: 0, fontSize: 13, maxWidth: 200, lineHeight: 1.4 }}>
-              Click any of the glowing shape circles in the playground scene to discover their properties!
+            <p style={{ fontFamily: 'Fredoka One, sans-serif', fontWeight: 900, color: '#fde047', margin: 0, fontSize: 14, maxWidth: 220, lineHeight: 1.45 }}>
+              Click any of the glowing shape circles in the scene to discover their properties!
             </p>
           </div>
         )}

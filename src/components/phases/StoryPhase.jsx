@@ -39,54 +39,54 @@ export default function StoryPhase({ state, onComplete }) {
         justifyContent: 'center',
         height: '100%',
         width: '100%',
-        padding: 'clamp(60px, 8vh, 80px) clamp(20px, 5vw, 60px) clamp(12px, 2vh, 24px)',
+        padding: 'clamp(56px, 7vh, 76px) clamp(16px, 4vw, 48px) clamp(10px, 1.5vh, 20px)',
         boxSizing: 'border-box',
-        gap: 'clamp(10px, 1.8vh, 18px)',
+        gap: 'clamp(10px, 1.6vh, 16px)',
         overflow: 'hidden',
         zIndex: 10,
         position: 'relative',
       }}
     >
       {/* Progress bar — full width above card */}
-      <div style={{ width: 'min(95%, 760px)', display: 'flex', alignItems: 'center', gap: 12, flexShrink: 0 }}>
-        <div style={{ flex: 1, height: 5, background: 'rgba(255,255,255,0.1)', borderRadius: 3 }}>
+      <div style={{ width: 'min(96%, 920px)', display: 'flex', alignItems: 'center', gap: 12, flexShrink: 0 }}>
+        <div style={{ flex: 1, height: 6, background: 'rgba(255,255,255,0.12)', borderRadius: 4 }}>
           <div
             style={{
               width: `${progressPercent}%`,
               height: '100%',
               background: 'linear-gradient(90deg, #a78bfa, #facc15)',
-              borderRadius: 3,
+              borderRadius: 4,
               transition: 'width 0.3s ease',
             }}
           />
         </div>
-        <span style={{ fontFamily: 'Fredoka One, sans-serif', fontSize: 11, color: 'rgba(255,255,255,0.45)', flexShrink: 0 }}>
+        <span style={{ fontFamily: 'Fredoka One, sans-serif', fontSize: 12, color: 'rgba(255,255,255,0.6)', flexShrink: 0, fontWeight: 900 }}>
           {panelIndex + 1}/{storyPanels.length}
         </span>
       </div>
 
-      {/* ── Horizontal Story Card ── */}
+      {/* ── Larger Horizontal Story Card ── */}
       <div
         className="glass-card"
         style={{
-          width: 'min(95%, 760px)',
-          borderRadius: 20,
-          backgroundColor: 'rgba(30, 20, 70, 0.6)',
-          border: '1.5px solid rgba(255,255,255,0.1)',
-          boxShadow: '0 12px 40px rgba(0,0,0,0.45)',
+          width: 'min(96%, 920px)',
+          borderRadius: 24,
+          backgroundColor: 'rgba(30, 20, 70, 0.75)',
+          border: '2px solid rgba(255,255,255,0.22)',
+          boxShadow: '0 20px 56px rgba(0,0,0,0.55)',
           display: 'flex',
           flexDirection: 'row',
           overflow: 'hidden',
           flexShrink: 0,
           minHeight: 0,
-          height: 'clamp(200px, 38vh, 280px)',
+          height: 'clamp(280px, 54vh, 460px)',
         }}
       >
-        {/* Left: Illustration */}
+        {/* Left: Illustration Image */}
         <div
           style={{
             flex: '0 0 auto',
-            width: 'clamp(200px, 40%, 300px)',
+            width: 'clamp(260px, 44%, 420px)',
             position: 'relative',
             overflow: 'hidden',
             flexShrink: 0,
@@ -109,10 +109,10 @@ export default function StoryPhase({ state, onComplete }) {
         <div
           style={{
             flex: 1,
-            padding: 'clamp(14px, 2vh, 20px) clamp(14px, 2vw, 22px)',
+            padding: 'clamp(16px, 3vh, 28px) clamp(20px, 3vw, 32px)',
             display: 'flex',
             flexDirection: 'column',
-            gap: 'clamp(8px, 1.2vh, 12px)',
+            gap: 'clamp(10px, 1.8vh, 16px)',
             justifyContent: 'center',
             overflow: 'hidden',
           }}
@@ -121,10 +121,12 @@ export default function StoryPhase({ state, onComplete }) {
           <h2
             style={{
               fontFamily: 'Fredoka One, sans-serif',
-              fontSize: 'clamp(15px, 2vh, 20px)',
+              fontWeight: 900,
+              fontSize: 'clamp(20px, 3.2vh, 26px)',
               color: '#facc15',
               margin: 0,
-              lineHeight: 1.1,
+              lineHeight: 1.2,
+              textShadow: '0 2px 8px rgba(0,0,0,0.4)',
             }}
           >
             {currentPanel.title}
@@ -133,10 +135,11 @@ export default function StoryPhase({ state, onComplete }) {
           {/* Body text */}
           <p
             style={{
-              fontFamily: 'Nunito, sans-serif',
-              fontSize: 'clamp(11px, 1.5vh, 14px)',
-              color: 'rgba(255,255,255,0.88)',
-              lineHeight: 1.5,
+              fontFamily: 'Fredoka One, sans-serif',
+              fontWeight: 900,
+              fontSize: 'clamp(13px, 2.1vh, 16px)',
+              color: '#ffffff',
+              lineHeight: 1.45,
               margin: 0,
             }}
           >
@@ -146,16 +149,17 @@ export default function StoryPhase({ state, onComplete }) {
           {/* Highlight pill */}
           <div
             style={{
-              background: 'rgba(251,146,60,0.08)',
-              border: '1px dashed rgba(251,146,60,0.35)',
-              borderRadius: 12,
-              padding: '6px 12px',
+              background: 'rgba(250,204,21,0.15)',
+              border: '1.5px dashed rgba(250,204,21,0.5)',
+              borderRadius: 14,
+              padding: '8px 16px',
               fontFamily: 'Fredoka One, sans-serif',
-              fontSize: 'clamp(10px, 1.3vh, 12px)',
-              color: '#fb923c',
+              fontWeight: 900,
+              fontSize: 'clamp(12px, 1.7vh, 14px)',
+              color: '#fde047',
               display: 'flex',
               alignItems: 'center',
-              gap: 6,
+              gap: 8,
               flexShrink: 0,
             }}
           >
@@ -163,18 +167,18 @@ export default function StoryPhase({ state, onComplete }) {
           </div>
 
           {/* Mascot bubble */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexShrink: 0 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexShrink: 0 }}>
             <div
               style={{
-                width: 32,
-                height: 32,
+                width: 40,
+                height: 40,
                 borderRadius: '50%',
                 backgroundColor: '#facc15',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                fontSize: 17,
-                boxShadow: '0 3px 10px rgba(250,204,21,0.3)',
+                fontSize: 22,
+                boxShadow: '0 4px 12px rgba(250,204,21,0.4)',
                 flexShrink: 0,
               }}
             >
@@ -184,13 +188,13 @@ export default function StoryPhase({ state, onComplete }) {
               style={{
                 background: '#fff',
                 color: '#1a0f4e',
-                borderRadius: '12px 12px 12px 4px',
-                padding: '5px 11px',
-                fontFamily: 'Nunito, sans-serif',
-                fontSize: 'clamp(9px, 1.2vh, 11px)',
-                fontWeight: 800,
-                boxShadow: '0 3px 10px rgba(0,0,0,0.15)',
-                lineHeight: 1.3,
+                borderRadius: '14px 14px 14px 4px',
+                padding: '8px 15px',
+                fontFamily: 'Fredoka One, sans-serif',
+                fontWeight: 900,
+                fontSize: 'clamp(12px, 1.7vh, 14px)',
+                boxShadow: '0 4px 14px rgba(0,0,0,0.2)',
+                lineHeight: 1.35,
                 flex: 1,
               }}
             >
@@ -206,7 +210,7 @@ export default function StoryPhase({ state, onComplete }) {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          width: 'min(95%, 760px)',
+          width: 'min(96%, 920px)',
           flexShrink: 0,
         }}
       >
@@ -215,34 +219,36 @@ export default function StoryPhase({ state, onComplete }) {
           onClick={handleBack}
           disabled={panelIndex === 0}
           style={{
-            background: 'transparent',
-            border: '2px solid rgba(255,255,255,0.2)',
+            background: 'rgba(255,255,255,0.08)',
+            border: '2px solid rgba(255,255,255,0.3)',
             color: '#fff',
             borderRadius: 24,
-            padding: '8px 20px',
+            padding: '11px 26px',
             fontFamily: 'Fredoka One, sans-serif',
-            fontSize: 12,
+            fontWeight: 900,
+            fontSize: 14,
             cursor: panelIndex === 0 ? 'default' : 'pointer',
             opacity: panelIndex === 0 ? 0.3 : 1,
             display: 'flex',
             alignItems: 'center',
-            gap: 6,
+            gap: 8,
           }}
         >
-          <ArrowLeft size={14} />
+          <ArrowLeft size={18} />
           Back
         </button>
 
         {/* Dot indicators */}
-        <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+        <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
           {storyPanels.map((_, i) => (
             <div
               key={i}
               style={{
-                width: i === panelIndex ? 16 : 8,
-                height: 8,
-                borderRadius: 4,
-                backgroundColor: i === panelIndex ? '#facc15' : 'rgba(255,255,255,0.25)',
+                width: i === panelIndex ? 24 : 10,
+                height: 10,
+                borderRadius: 5,
+                backgroundColor: i === panelIndex ? '#facc15' : 'rgba(255,255,255,0.3)',
+                boxShadow: i === panelIndex ? '0 0 12px rgba(250,204,21,0.7)' : 'none',
                 transition: 'all 0.3s ease',
               }}
             />
@@ -258,20 +264,20 @@ export default function StoryPhase({ state, onComplete }) {
               background: 'linear-gradient(135deg, #fde047 0%, #facc15 50%, #eab308 100%)',
               border: 'none',
               borderRadius: 24,
-              padding: '8px 20px',
+              padding: '11px 26px',
               color: '#1a0f4e',
               fontFamily: 'Fredoka One, sans-serif',
-              fontSize: 12,
+              fontSize: 14,
               fontWeight: 900,
               cursor: 'pointer',
-              boxShadow: '0 6px 18px rgba(250,204,21,0.35)',
+              boxShadow: '0 6px 20px rgba(250,204,21,0.5)',
               display: 'flex',
               alignItems: 'center',
-              gap: 6,
+              gap: 8,
             }}
           >
             <span>Simulation Lab</span>
-            <Sparkles size={14} />
+            <Sparkles size={18} />
           </button>
         ) : (
           <button
@@ -280,20 +286,20 @@ export default function StoryPhase({ state, onComplete }) {
               background: 'linear-gradient(135deg, #fde047 0%, #facc15 50%, #eab308 100%)',
               border: 'none',
               borderRadius: 24,
-              padding: '8px 20px',
+              padding: '11px 26px',
               color: '#1a0f4e',
               fontFamily: 'Fredoka One, sans-serif',
-              fontSize: 12,
+              fontSize: 14,
               fontWeight: 900,
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
-              gap: 6,
-              boxShadow: '0 6px 18px rgba(250,204,21,0.35)',
+              gap: 8,
+              boxShadow: '0 6px 20px rgba(250,204,21,0.5)',
             }}
           >
             <span>Next</span>
-            <ArrowRight size={14} />
+            <ArrowRight size={18} />
           </button>
         )}
       </div>

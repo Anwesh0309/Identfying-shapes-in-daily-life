@@ -3,6 +3,7 @@ import { Sparkles, CheckCircle, RotateCw, RefreshCw } from 'lucide-react';
 import { narrate, say, stopNarration, sfxCorrect, sfxLevelUp } from '../../utils/audio.js';
 import { simulateStationNarration } from '../../utils/narration.js';
 import { shapes } from '../../data/shapeData.js';
+import stationCBg from '../../assets/station_c_bg.png';
 
 // ── Utility ──
 function hexToRgb(hex) {
@@ -89,12 +90,12 @@ export default function SimulatePhase({ state, onStationComplete, onComplete }) 
       if (index < 2) {
         setTimeout(() => setStationId(stationIds[index + 1]), 400);
       }
-      // Station C (index=2): stay on C, show Go to Play button
+      // Station C (index=2): stay on C, show Go to Practice button
 
       if (state.audioEnabled) {
         const allComplete = updated.every(s => s);
         if (allComplete) {
-          narrate([say('Fantastic! You completed all three simulation stations! Click Go to Play below.')]);
+          narrate([say('Fantastic! You completed all three simulation stations! Click Go to Practice below.')]);
         } else {
           narrate([say('Great job! Station complete! Moving to the next one.')]);
         }
@@ -175,8 +176,6 @@ export default function SimulatePhase({ state, onStationComplete, onComplete }) 
     }
   };
 
-  const allStationsDone = completedStations.every(s => s);
-
   return (
     <div
       style={{
@@ -190,7 +189,7 @@ export default function SimulatePhase({ state, onStationComplete, onComplete }) 
         overflow: 'hidden',
       }}
     >
-      {/* STATION SELECTION TABS */}
+      {/* STATION SELECTION TABS — Unlocked all sections */}
       <div
         style={{
           display: 'flex',
@@ -203,33 +202,31 @@ export default function SimulatePhase({ state, onStationComplete, onComplete }) 
           { id: 'explorer', label: 'Station A: Shape Explorer', icon: '🏃', index: 0 },
           { id: 'spinner', label: 'Station B: Solid Spinner', icon: '🧪', index: 1 },
           { id: 'hunt', label: 'Station C: Shape Hunt', icon: '🔍', index: 2 }
-        ].map((tab, i) => {
-          // Station B locked until A done; Station C locked until B done
-          const isLocked = i > 0 && !completedStations[i - 1];
+        ].map((tab) => {
+          const isLocked = false; // Unlocked all sections per prompt
           const isActive = stationId === tab.id;
           return (
             <button
               key={tab.id}
-              onClick={() => !isLocked && setStationId(tab.id)}
-              disabled={isLocked}
-              title={isLocked ? `Complete Station ${String.fromCharCode(64 + i)} first!` : ''}
+              onClick={() => setStationId(tab.id)}
               style={{
-                background: isActive ? 'rgba(56, 189, 248, 0.2)' : 'rgba(255,255,255,0.04)',
-                border: isActive ? '1.5px solid #38bdf8' : '1.5px solid rgba(255,255,255,0.1)',
+                background: isActive ? 'rgba(56, 189, 248, 0.25)' : 'rgba(255,255,255,0.08)',
+                border: isActive ? '2px solid #38bdf8' : '1.5px solid rgba(255,255,255,0.2)',
                 borderRadius: 20,
-                padding: '8px 16px',
+                padding: '9px 18px',
                 fontFamily: 'Fredoka One, sans-serif',
-                color: isLocked ? 'rgba(255,255,255,0.25)' : isActive ? '#38bdf8' : 'rgba(255,255,255,0.6)',
-                cursor: isLocked ? 'not-allowed' : 'pointer',
+                fontWeight: 900,
+                color: isActive ? '#38bdf8' : '#ffffff',
+                cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
                 gap: 8,
-                fontSize: 'clamp(11px, 1.2vw, 13px)',
+                fontSize: 'clamp(12px, 1.3vw, 14px)',
                 transition: 'all 0.2s',
-                opacity: isLocked ? 0.5 : 1,
+                boxShadow: isActive ? '0 0 12px rgba(56, 189, 248, 0.4)' : 'none',
               }}
             >
-              <span>{completedStations[tab.index] ? '✅' : isLocked ? '🔒' : tab.icon}</span>
+              <span>{completedStations[tab.index] ? '✅' : tab.icon}</span>
               <span>{tab.label}</span>
             </button>
           );
@@ -242,8 +239,8 @@ export default function SimulatePhase({ state, onStationComplete, onComplete }) 
         style={{
           flex: 1,
           borderRadius: 20,
-          border: '1px solid rgba(255,255,255,0.15)',
-          boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
+          border: '1.5px solid rgba(255,255,255,0.2)',
+          boxShadow: '0 8px 32px rgba(0,0,0,0.4)',
           display: 'flex',
           overflow: 'hidden',
           position: 'relative',
@@ -254,8 +251,8 @@ export default function SimulatePhase({ state, onStationComplete, onComplete }) 
           <div style={{ display: 'flex', flex: 1, width: '100%', height: '100%', padding: '12px 14px', gap: 12, overflow: 'hidden' }}>
             {/* Shapes list — 6 items in a 3×2 grid */}
             <div style={{ flex: '0 0 auto', width: '36%', display: 'flex', flexDirection: 'column', gap: 8, overflow: 'hidden' }}>
-              <h3 style={{ fontFamily: 'Fredoka One, sans-serif', color: '#fff', margin: 0, fontSize: 13, flexShrink: 0 }}>
-                2D Shapes — tap to select
+              <h3 style={{ fontFamily: 'Fredoka One, sans-serif', fontWeight: 900, color: '#facc15', margin: 0, fontSize: 14, flexShrink: 0 }}>
+                2D Shapes — tap to select:
               </h3>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gridTemplateRows: 'repeat(2, 1fr)', gap: 8, flex: 1, minHeight: 0 }}>
                 {TWO_D_SHAPES.map(id => {
@@ -268,10 +265,10 @@ export default function SimulatePhase({ state, onStationComplete, onComplete }) 
                       onClick={() => !isPlaced && handleSelectExplorerShape(id)}
                       disabled={isPlaced}
                       style={{
-                        background: isSelected ? `rgba(${hexToRgb(color)}, 0.15)` : 'rgba(255,255,255,0.03)',
-                        border: isSelected ? `2.5px solid ${color}` : `1px dashed ${isPlaced ? 'rgba(255,255,255,0.05)' : color}`,
+                        background: isSelected ? `rgba(${hexToRgb(color)}, 0.25)` : 'rgba(255,255,255,0.06)',
+                        border: isSelected ? `3px solid ${color}` : `1.5px dashed ${isPlaced ? 'rgba(255,255,255,0.1)' : color}`,
                         borderRadius: 14,
-                        opacity: isPlaced ? 0.2 : 1,
+                        opacity: isPlaced ? 0.25 : 1,
                         cursor: isPlaced ? 'default' : 'pointer',
                         display: 'flex',
                         flexDirection: 'column',
@@ -280,10 +277,10 @@ export default function SimulatePhase({ state, onStationComplete, onComplete }) 
                         gap: 4,
                         padding: '6px 4px',
                         transition: 'all 0.2s',
-                        boxShadow: isSelected ? `0 0 10px ${color}55` : 'none',
+                        boxShadow: isSelected ? `0 0 12px ${color}88` : 'none',
                       }}
                     >
-                      <span style={{ fontSize: 'clamp(16px, 2vw, 22px)', color, lineHeight: 1 }}>
+                      <span style={{ fontSize: 'clamp(18px, 2.2vw, 24px)', color, lineHeight: 1 }}>
                         {id === 'circle' && '●'}
                         {id === 'triangle' && '▲'}
                         {id === 'rectangle' && '▬'}
@@ -291,7 +288,7 @@ export default function SimulatePhase({ state, onStationComplete, onComplete }) 
                         {id === 'pentagon' && '⬟'}
                         {id === 'hexagon' && '⬡'}
                       </span>
-                      <span style={{ fontFamily: 'Fredoka One, sans-serif', color: '#fff', fontSize: 'clamp(9px, 0.9vw, 11px)', textAlign: 'center', lineHeight: 1.1 }}>
+                      <span style={{ fontFamily: 'Fredoka One, sans-serif', fontWeight: 900, color: '#fff', fontSize: 'clamp(10px, 1vw, 12px)', textAlign: 'center', lineHeight: 1.1 }}>
                         {shapes[id].name}
                       </span>
                     </button>
@@ -300,102 +297,110 @@ export default function SimulatePhase({ state, onStationComplete, onComplete }) 
               </div>
             </div>
 
-            {/* Drop Zones — 4 zones in a 2×2 grid */}
-            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 8, overflow: 'hidden' }}>
-              <h3 style={{ fontFamily: 'Fredoka One, sans-serif', color: '#fff', margin: 0, fontSize: 13, flexShrink: 0 }}>
-                Classification Zones — select a shape, then tap a zone
-              </h3>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gridTemplateRows: 'repeat(2, 1fr)', gap: 8, flex: 1, minHeight: 0 }}>
-                {DROP_ZONES.map(zone => {
-                  const placedShapes = Object.keys(explorerPlacements).filter(
-                    key => explorerPlacements[key] === zone.id
-                  );
-                  const isFull = zone.match.every(m => explorerPlacements[m] !== null);
-                  return (
-                    <button
-                      key={zone.id}
-                      onClick={() => handlePlaceExplorerShape(zone.id)}
-                      style={{
-                        background: isFull ? 'rgba(34, 197, 94, 0.08)' : 'rgba(10, 8, 32, 0.45)',
-                        border: isFull ? '1.5px solid rgba(34,197,94,0.4)' : selectedShape ? '1.5px dashed #38bdf8' : '1.5px dashed rgba(255,255,255,0.2)',
-                        borderRadius: 14,
-                        padding: '8px 10px',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        justifyContent: 'flex-start',
-                        gap: 6,
-                        cursor: selectedShape ? 'pointer' : 'default',
-                        transition: 'all 0.2s',
-                        overflow: 'hidden',
-                      }}
-                    >
-                      <span style={{ fontFamily: 'Fredoka One, sans-serif', color: isFull ? '#4ade80' : 'rgba(255,255,255,0.7)', fontSize: 'clamp(10px, 1vw, 12px)', textAlign: 'center', lineHeight: 1.2, flexShrink: 0 }}>
-                        {isFull && '✅ '}{zone.label}
-                      </span>
-                      <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap', justifyContent: 'center' }}>
-                        {placedShapes.map(sId => (
-                          <div
-                            key={sId}
-                            style={{
-                              background: shapes[sId].color,
-                              color: '#0f0a2e',
-                              borderRadius: 10,
-                              padding: '2px 6px',
-                              fontFamily: 'Fredoka One, sans-serif',
-                              fontSize: 'clamp(8px, 0.8vw, 10px)',
-                              display: 'flex',
-                              alignItems: 'center',
-                              gap: 3,
-                            }}
-                          >
-                            <span>✓</span>
-                            <span>{shapes[sId].name}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </button>
-                  );
-                })}
-              </div>
+            {/* Drop Zones — 4 columns */}
+            <div style={{ flex: 1, display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 8, height: '100%' }}>
+              {DROP_ZONES.map(zone => {
+                const placedShapes = TWO_D_SHAPES.filter(id => explorerPlacements[id] === zone.id);
+                return (
+                  <div
+                    key={zone.id}
+                    onClick={() => handlePlaceExplorerShape(zone.id)}
+                    style={{
+                      background: 'rgba(10, 8, 32, 0.45)',
+                      border: selectedShape ? '2px dashed #facc15' : '1.5px solid rgba(255,255,255,0.15)',
+                      borderRadius: 16,
+                      padding: 8,
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: 6,
+                      cursor: selectedShape ? 'pointer' : 'default',
+                      transition: 'all 0.2s',
+                    }}
+                  >
+                    <span style={{ fontFamily: 'Fredoka One, sans-serif', fontWeight: 900, fontSize: 12, color: '#4ade80', textAlign: 'center' }}>
+                      {zone.label}
+                    </span>
+                    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 6, justifyContent: 'center' }}>
+                      {placedShapes.map(sId => (
+                        <div
+                          key={sId}
+                          style={{
+                            background: `rgba(${hexToRgb(shapes[sId].color)}, 0.2)`,
+                            border: `1.5px solid ${shapes[sId].color}`,
+                            borderRadius: 10,
+                            padding: '4px 6px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 6,
+                          }}
+                        >
+                          <span style={{ fontSize: 14, color: shapes[sId].color }}>●</span>
+                          <span style={{ fontFamily: 'Fredoka One', fontWeight: 900, fontSize: 11, color: '#fff' }}>
+                            {shapes[sId].name}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
         )}
 
-        {/* ── STATION B: SOLID SPINNER ── */}
+        {/* ── STATION B & C WORKSPACE RENDER CONTINUED ── */}
         {stationId === 'spinner' && (
-          <div style={{ display: 'flex', flex: 1, width: '100%', height: '100%', padding: 16, gap: 16 }}>
-            {/* Sidebar Solid List */}
-            <div style={{ flex: 0.8, display: 'flex', flexDirection: 'column', gap: 6, overflowY: 'auto' }}>
-              {THREE_D_SOLIDS.map(id => {
-                const isMatched = spinnerMatches[id];
-                const isActive = activeSolidId === id;
-                return (
+          <div style={{ display: 'flex', flex: 1, width: '100%', height: '100%', padding: '12px 14px', gap: 12, overflow: 'hidden' }}>
+            {/* 3D Solid Viewer */}
+            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 12 }}>
+              <h3 style={{ fontFamily: 'Fredoka One, sans-serif', fontWeight: 900, color: '#facc15', margin: 0, fontSize: 16 }}>
+                Inspect 3D Solid: {shapes[activeSolidId]?.name}
+              </h3>
+              <div
+                onClick={handleSwipeRotate}
+                style={{
+                  width: 140,
+                  height: 140,
+                  borderRadius: 20,
+                  background: 'rgba(10, 8, 32, 0.6)',
+                  border: '2px solid rgba(255,255,255,0.2)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: 56,
+                  cursor: 'pointer',
+                  boxShadow: '0 8px 24px rgba(0,0,0,0.4)',
+                }}
+              >
+                {activeSolidId === 'sphere' && '⚽'}
+                {activeSolidId === 'cylinder' && '🥫'}
+                {activeSolidId === 'cone' && '🍦'}
+                {activeSolidId === 'cube' && '🎲'}
+                {activeSolidId === 'cuboid' && '📦'}
+                {activeSolidId === 'pyramid' && '🫖'}
+              </div>
+              <div style={{ display: 'flex', gap: 8 }}>
+                {THREE_D_SOLIDS.map(id => (
                   <button
                     key={id}
                     onClick={() => setActiveSolidId(id)}
                     style={{
-                      background: isActive ? 'rgba(56, 189, 248, 0.15)' : 'rgba(255,255,255,0.03)',
-                      border: isActive ? '1.5px solid #38bdf8' : '1px solid rgba(255,255,255,0.1)',
+                      background: activeSolidId === id ? '#38bdf8' : 'rgba(255,255,255,0.1)',
+                      border: 'none',
                       borderRadius: 12,
-                      padding: 10,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
+                      padding: '6px 12px',
+                      color: activeSolidId === id ? '#0f0a2e' : '#fff',
+                      fontFamily: 'Fredoka One, sans-serif',
+                      fontWeight: 900,
+                      fontSize: 12,
                       cursor: 'pointer',
-                      transition: 'all 0.2s',
                     }}
                   >
-                    <span style={{ fontFamily: 'Fredoka One, sans-serif', color: '#fff', fontSize: 12 }}>
-                      {shapes[id].name}
-                    </span>
-                    <span style={{ fontSize: 12 }}>{isMatched ? '✅' : '❓'}</span>
+                    {shapes[id].name}
                   </button>
-                );
-              })}
+                ))}
+              </div>
             </div>
-
-            {/* Spinner Showcase area */}
             <div style={{ flex: 1.5, display: 'flex', flexDirection: 'column', gap: 12 }}>
               <div style={{
                 flex: 1, background: 'rgba(10, 8, 32, 0.5)', borderRadius: 16, border: '1px solid rgba(255,255,255,0.1)',
@@ -522,73 +527,16 @@ export default function SimulatePhase({ state, onStationComplete, onComplete }) 
         {/* ── STATION C: SHAPE HUNT ── */}
         {stationId === 'hunt' && (
           <div style={{ display: 'flex', flex: 1, width: '100%', height: '100%', position: 'relative' }}>
-            {/* ── Outdoor Park Scene ── */}
+            {/* ── Outdoor Park Scene Background Image ── */}
             <div style={{
               flex: 1.3, position: 'relative', overflow: 'hidden',
-              background: 'linear-gradient(180deg, #87CEEB 0%, #b8e4f7 35%, #c8f0a0 55%, #5a9e30 75%, #3d7520 100%)',
+              backgroundImage: `url(${stationCBg})`,
+              backgroundSize: '100% 100%',
+              backgroundRepeat: 'no-repeat',
+              backgroundPosition: 'center center',
             }}>
-              {/* Sky clouds */}
-              {[[8,8,55],[25,5,40],[55,10,65],[72,6,45]].map(([l,t,w],i) => (
-                <div key={i} style={{ position:'absolute', left:`${l}%`, top:`${t}%`,
-                  width:`${w}px`, height:'18px', borderRadius:20,
-                  background:'rgba(255,255,255,0.85)', boxShadow:'0 2px 8px rgba(255,255,255,0.4)' }} />
-              ))}
-              {/* Sunshine */}
-              <div style={{ position:'absolute', top:'4%', right:'8%', width:40, height:40, borderRadius:'50%',
-                background:'radial-gradient(circle, #ffe566 0%, #ffb300 70%, transparent 100%)',
-                boxShadow:'0 0 20px 6px rgba(255,200,50,0.4)' }} />
-              {/* Ground path */}
-              <div style={{ position:'absolute', bottom:0, left:0, right:0, height:'40%',
-                background:'linear-gradient(180deg, #6db82e 0%, #4a8a1c 100%)' }} />
-              {/* Pond / lake */}
-              <div style={{ position:'absolute', bottom:'22%', left:'20%', width:'28%', height:'18%',
-                borderRadius:'50% 60% 55% 50% / 50% 50% 60% 60%',
-                background:'linear-gradient(135deg, #4fc3f7 0%, #29b6f6 50%, #0288d1 100%)',
-                boxShadow:'0 4px 16px rgba(3,169,244,0.3)' }} />
-              {/* Dock/pier */}
-              <div style={{ position:'absolute', bottom:'30%', left:'26%', width:'6%', height:'4%',
-                background:'#8B6914', borderRadius:'2px 2px 0 0' }} />
-              {/* Fountain */}
-              <div style={{ position:'absolute', bottom:'35%', left:'34%', width:16, height:16,
-                borderRadius:'50%', background:'#29b6f6', boxShadow:'0 0 10px rgba(3,169,244,0.6)' }} />
-              {/* Street lamp */}
-              <div style={{ position:'absolute', bottom:'28%', left:'46%', width:4, height:'28%',
-                background:'#4a4a5a', borderRadius:2 }}>
-                <div style={{ position:'absolute', top:-8, left:-8, width:20, height:12, borderRadius:'50% 50% 0 0',
-                  background:'#6a6a7a', boxShadow:'0 0 8px rgba(255,220,100,0.5)' }} />
-              </div>
-              {/* Signpost */}
-              <div style={{ position:'absolute', bottom:'28%', left:'53%', width:3, height:'20%',
-                background:'#8B6914', borderRadius:2 }}>
-                {[['#e74c3c','-45deg',16],['#3498db','0deg',16],['#27ae60','25deg',16]].map(([c,r,w],i) => (
-                  <div key={i} style={{ position:'absolute', top:`${10+i*30}%`, left:3, width:w, height:5,
-                    background:c, borderRadius:2, transformOrigin:'left center', transform:`rotate(${r})` }} />
-                ))}
-              </div>
-              {/* Gazebo/pavilion background */}
-              <div style={{ position:'absolute', bottom:'28%', right:'22%', width:'12%', height:'20%',
-                background:'rgba(200,160,80,0.3)', borderRadius:'50% 50% 0 0 / 30% 30% 0 0',
-                border:'1px solid rgba(200,160,80,0.5)' }} />
-              {/* Playground slide right */}
-              <div style={{ position:'absolute', bottom:'27%', right:'4%', width:'14%', height:'28%',
-                background:'rgba(56,120,200,0.4)', borderRadius:'8px 8px 0 0',
-                border:'1px solid rgba(56,120,200,0.6)' }} />
-              <div style={{ position:'absolute', bottom:'26%', right:'6%', width:'10%', height:'8%',
-                background:'rgba(255,200,50,0.7)', borderRadius:'0 0 4px 4px',
-                transform:'rotate(-15deg)', transformOrigin:'bottom left' }} />
-              {/* Trees */}
-              {[[2,18],[88,20],[72,24]].map(([l,s],i) => (
-                <div key={i} style={{ position:'absolute', bottom:'28%', left:`${l}%` }}>
-                  <div style={{ width:s, height:s, borderRadius:'50%',
-                    background:`radial-gradient(circle, #5cb85c 0%, #3d8b3d 100%)`,
-                    boxShadow:'0 4px 12px rgba(60,140,60,0.3)', marginLeft: -s/4 }} />
-                  <div style={{ width:4, height:12, background:'#6b4423',
-                    margin:'0 auto', borderRadius:'0 0 2px 2px' }} />
-                </div>
-              ))}
-              {/* Path/walkway */}
-              <div style={{ position:'absolute', bottom:'24%', left:'40%', width:'22%', height:'8%',
-                background:'rgba(180,160,120,0.5)', borderRadius:4 }} />
+              {/* Subtle ambient lighting vignette */}
+              <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at 50% 40%, rgba(255,255,255,0.08) 0%, rgba(0,0,0,0.2) 100%)', pointerEvents: 'none' }} />
 
               {/* ── Glowing clickable items ── */}
               {HIDING_ITEMS.map(item => {
@@ -668,10 +616,10 @@ export default function SimulatePhase({ state, onStationComplete, onComplete }) 
             padding: '11px 28px',
             color: '#1a0f4e',
             fontFamily: 'Fredoka One, sans-serif',
-            fontSize: 15,
+            fontSize: 16,
             fontWeight: 900,
             cursor: 'pointer',
-            boxShadow: '0 8px 24px rgba(250, 204, 21, 0.45)',
+            boxShadow: '0 8px 24px rgba(250, 204, 21, 0.55)',
             alignSelf: 'center',
             display: 'flex',
             alignItems: 'center',
@@ -680,7 +628,7 @@ export default function SimulatePhase({ state, onStationComplete, onComplete }) 
           }}
         >
           <Sparkles size={18} />
-          Go to Play
+          Go to Practice
         </button>
       )}
     </div>

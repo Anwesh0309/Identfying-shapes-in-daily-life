@@ -19,21 +19,11 @@ export default function App() {
   const { state, dispatch, ACTIONS } = useGameState();
   const [reflection, setReflection] = useState(null);
 
-  // Phase order enforcement — only allow navigating to a phase if prerequisites are done
-  const PHASE_ORDER = ['intro', 'wonder', 'story', 'simulate', 'play', 'reflect', 'results'];
+  // All phases unlocked per prompt requirement
+  const canAccessPhase = () => true;
 
-  const canAccessPhase = (targetPhase) => {
-    const idx = PHASE_ORDER.indexOf(targetPhase);
-    if (idx <= 1) return true; // intro and wonder always accessible
-    // Each phase requires the previous to be complete
-    const prevPhase = PHASE_ORDER[idx - 1];
-    if (prevPhase === 'intro') return true;
-    return state.phaseComplete[prevPhase] === true;
-  };
-
-  // Safe phase transition — blocks if prereqs not met
+  // Safe phase transition
   const goToPhase = (phase) => {
-    if (!canAccessPhase(phase)) return;
     // Reset simulation state whenever entering simulate
     if (phase === 'simulate') {
       dispatch({ type: ACTIONS.RESET_SIM_STATIONS });
@@ -80,6 +70,7 @@ export default function App() {
         onHome={handleHome}
         onClose={handleClose}
         onToggleAudio={handleToggleAudio}
+        onSelectPhase={goToPhase}
       />
 
       {/* Main Content Area */}

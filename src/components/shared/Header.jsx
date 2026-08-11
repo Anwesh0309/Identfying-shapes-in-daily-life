@@ -8,8 +8,9 @@ export default function Header({
   onHome,
   onClose,
   onToggleAudio,
+  onSelectPhase,
 }) {
-  const isIntroOrResults = phase === 'intro' || phase === 'results';
+  const isIntro = phase === 'intro';
 
   return (
     <header
@@ -36,7 +37,7 @@ export default function Header({
           minWidth: 100,
         }}
       >
-        {!isIntroOrResults && (
+        {!isIntro && (
           <button
             onClick={onHome}
             className="btn-icon-glass"
@@ -61,17 +62,46 @@ export default function Header({
         )}
       </div>
 
-      {/* CENTER SECTION: Journey Progress Tracker */}
+      {/* CENTER SECTION: Journey Progress Tracker + Mute Button Beside Nav Bar */}
       <div
         style={{
           pointerEvents: 'auto',
-          display: isIntroOrResults ? 'none' : 'block',
+          display: isIntro ? 'none' : 'flex',
+          alignItems: 'center',
+          gap: 10,
         }}
       >
-        <ProgressMap currentPhase={phase} phaseComplete={phaseComplete} />
+        <ProgressMap currentPhase={phase} phaseComplete={phaseComplete} onSelectPhase={onSelectPhase} />
+
+        <button
+          onClick={onToggleAudio}
+          className="btn-icon-glass"
+          aria-label={audioEnabled ? 'Mute Audio' : 'Unmute Audio'}
+          style={{
+            width: 38,
+            height: 38,
+            padding: 0,
+            borderRadius: '50%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            cursor: 'pointer',
+            border: '1.5px solid rgba(255, 255, 255, 0.15)',
+            background: 'rgba(10, 8, 32, 0.75)',
+            backdropFilter: 'blur(16px)',
+            WebkitBackdropFilter: 'blur(16px)',
+            color: '#fff',
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)',
+            transition: 'transform 0.2s',
+          }}
+          onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.08)'}
+          onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
+        >
+          {audioEnabled ? <Volume2 size={18} /> : <VolumeX size={18} />}
+        </button>
       </div>
 
-      {/* RIGHT SECTION: Sound toggle and Close */}
+      {/* RIGHT SECTION: Close button */}
       <div
         style={{
           display: 'flex',
@@ -82,29 +112,6 @@ export default function Header({
           minWidth: 100,
         }}
       >
-        {!isIntroOrResults && (
-          <button
-            onClick={onToggleAudio}
-            className="btn-icon-glass"
-            aria-label={audioEnabled ? 'Mute Audio' : 'Unmute Audio'}
-            style={{
-              width: 36,
-              height: 36,
-              padding: 0,
-              borderRadius: '50%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              cursor: 'pointer',
-              border: '1.5px solid rgba(255, 255, 255, 0.15)',
-              background: 'rgba(255, 255, 255, 0.08)',
-              color: '#fff',
-            }}
-          >
-            {audioEnabled ? <Volume2 size={16} /> : <VolumeX size={16} />}
-          </button>
-        )}
-
         <button
           onClick={onClose}
           className="btn-close"

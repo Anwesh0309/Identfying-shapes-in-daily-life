@@ -215,53 +215,53 @@ export default function PlayPhase({ state, dispatch, ACTIONS, onComplete }) {
       gap:'clamp(8px,1.4vh,12px)', boxSizing:'border-box', overflow:'hidden' }}>
 
       {/* Header pill */}
-      <div style={{ background:'linear-gradient(135deg,#7c3aed,#4f46e5)', borderRadius:24, padding:'5px 20px',
-        color:'#fff', fontFamily:'Fredoka One', fontSize:13,
-        display:'flex', alignItems:'center', gap:6,
-        boxShadow:'0 4px 12px rgba(124,58,237,0.4)', flexShrink:0 }}>
-        ✏️ Shape Practice
+      <div style={{ background:'linear-gradient(135deg,#7c3aed,#4f46e5)', borderRadius:24, padding:'6px 22px',
+        color:'#fff', fontFamily:'Fredoka One, sans-serif', fontWeight:900, fontSize:14,
+        display:'flex', alignItems:'center', gap:8,
+        boxShadow:'0 4px 16px rgba(124,58,237,0.5)', flexShrink:0 }}>
+        🎮 Shape Practice
       </div>
 
       {/* Stats row */}
       <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between',
-        width:'100%', maxWidth:560, flexShrink:0 }}>
-        <div style={{ background:'rgba(255,255,255,0.08)', border:'1px solid rgba(255,255,255,0.15)',
-          borderRadius:15, padding:'4px 12px', display:'flex', alignItems:'center', gap:6 }}>
-          <Star size={13} color="#facc15" fill="#facc15" />
-          <span style={{ fontFamily:'Fredoka One', color:'#fff', fontSize:13 }}>{state.totalStars}</span>
+        width:'100%', maxWidth:580, flexShrink:0 }}>
+        <div style={{ background:'rgba(255,255,255,0.12)', border:'1.5px solid rgba(255,255,255,0.2)',
+          borderRadius:16, padding:'5px 14px', display:'flex', alignItems:'center', gap:6 }}>
+          <Star size={15} color="#facc15" fill="#facc15" />
+          <span style={{ fontFamily:'Fredoka One, sans-serif', fontWeight:900, color:'#fff', fontSize:14 }}>{state.totalStars}</span>
         </div>
-        <span style={{ fontFamily:'Fredoka One', color:'rgba(255,255,255,0.5)', fontSize:12 }}>
-          {qIndex + 1} / 100
+        <span style={{ fontFamily:'Fredoka One, sans-serif', fontWeight:900, color:'#ffffff', fontSize:14 }}>
+          Question {qIndex + 1} / 100
         </span>
-        <div style={{ background:'rgba(255,255,255,0.08)', border:'1px solid rgba(255,255,255,0.15)',
-          borderRadius:15, padding:'4px 12px', display:'flex', alignItems:'center', gap:6 }}>
-          <span style={{ fontSize:13 }}>🔥</span>
-          <span style={{ fontFamily:'Fredoka One', color:'#f97316', fontSize:13 }}>{state.streak}x</span>
+        <div style={{ background:'rgba(255,255,255,0.12)', border:'1.5px solid rgba(255,255,255,0.2)',
+          borderRadius:16, padding:'5px 14px', display:'flex', alignItems:'center', gap:6 }}>
+          <span style={{ fontSize:15 }}>🔥</span>
+          <span style={{ fontFamily:'Fredoka One, sans-serif', fontWeight:900, color:'#f97316', fontSize:14 }}>{state.streak}x Streak</span>
         </div>
       </div>
 
       {/* Progress bar */}
-      <div style={{ width:'100%', maxWidth:560, height:5,
-        background:'rgba(255,255,255,0.1)', borderRadius:3, flexShrink:0 }}>
+      <div style={{ width:'100%', maxWidth:580, height:6,
+        background:'rgba(255,255,255,0.15)', borderRadius:3, flexShrink:0 }}>
         <div style={{ width:`${progressPercent}%`, height:'100%',
-          background:'linear-gradient(90deg,#7c3aed,#4f46e5)', borderRadius:3, transition:'width 0.3s ease' }} />
+          background:'linear-gradient(90deg,#7c3aed,#facc15)', borderRadius:3, transition:'width 0.3s ease' }} />
       </div>
 
       {/* Question card */}
-      <div className="glass-card" style={{ width:'100%', maxWidth:560,
-        padding:'clamp(12px,2vh,20px)', borderRadius:22,
-        backgroundColor:'rgba(30,20,70,0.55)', border:'1.5px solid rgba(255,255,255,0.1)',
-        boxShadow:'0 12px 36px rgba(0,0,0,0.45)',
-        display:'flex', flexDirection:'column', gap:12, flexShrink:0 }}>
+      <div className="glass-card" style={{ width:'100%', maxWidth:580,
+        padding:'clamp(14px,2.2vh,22px)', borderRadius:24,
+        backgroundColor:'rgba(30,20,70,0.65)', border:'2px solid rgba(255,255,255,0.2)',
+        boxShadow:'0 16px 44px rgba(0,0,0,0.5)',
+        display:'flex', flexDirection:'column', gap:14, flexShrink:0 }}>
 
         {/* Category + correct count */}
         <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center' }}>
-          <span style={{ background:'#facc15', color:'#1a0f4e', borderRadius:10, padding:'3px 10px',
-            fontFamily:'Fredoka One', fontSize:10, fontWeight:900, textTransform:'uppercase' }}>
+          <span style={{ background:'#facc15', color:'#1a0f4e', borderRadius:12, padding:'4px 12px',
+            fontFamily:'Fredoka One, sans-serif', fontSize:11, fontWeight:900, textTransform:'uppercase', letterSpacing:'0.5px' }}>
             {getCategoryLabel(currentQ.type)}
           </span>
-          <span style={{ fontFamily:'Nunito', fontSize:10, color:'rgba(255,255,255,0.4)', fontWeight:700 }}>
-            ✓ {correctCount} correct
+          <span style={{ fontFamily:'Fredoka One, sans-serif', fontWeight:900, fontSize:12, color:'#4ade80' }}>
+            ✓ {correctCount} Correct
           </span>
         </div>
 
@@ -269,22 +269,22 @@ export default function PlayPhase({ state, dispatch, ACTIONS, onComplete }) {
         <div style={{ display:'flex', alignItems:'center', gap:14 }}>
           {questionShapeId && (
             <div style={{ flexShrink:0 }}>
-              <ShapeSVG shapeId={questionShapeId} size={56} />
+              <ShapeSVG shapeId={questionShapeId} size={64} />
             </div>
           )}
-          <p style={{ fontFamily:'Fredoka One', fontSize:'clamp(13px,1.8vh,16px)',
-            color:'#fff', margin:0, lineHeight:1.45, flex:1 }}>
+          <p style={{ fontFamily:'Fredoka One, sans-serif', fontWeight:900, fontSize:'clamp(15px,2.2vh,19px)',
+            color:'#ffffff', margin:0, lineHeight:1.4, flex:1, textShadow:'0 2px 6px rgba(0,0,0,0.3)' }}>
             {currentQ.text}
           </p>
         </div>
 
         {/* Hint panel */}
         {showHint && (
-          <div style={{ background:'rgba(56,189,248,0.08)', border:'1px dashed rgba(56,189,248,0.35)',
-            borderRadius:12, padding:'8px 12px',
-            display:'flex', alignItems:'center', gap:10 }}>
-            {hintShapeId && <ShapeSVG shapeId={hintShapeId} size={36} />}
-            <span style={{ fontFamily:'Nunito', fontSize:12, color:'#e0f2fe', lineHeight:1.4 }}>
+          <div style={{ background:'rgba(56,189,248,0.15)', border:'1.5px dashed rgba(56,189,248,0.5)',
+            borderRadius:14, padding:'10px 14px',
+            display:'flex', alignItems:'center', gap:12 }}>
+            {hintShapeId && <ShapeSVG shapeId={hintShapeId} size={40} />}
+            <span style={{ fontFamily:'Fredoka One, sans-serif', fontWeight:900, fontSize:13, color:'#e0f2fe', lineHeight:1.45 }}>
               💡 {currentQ.hint}
             </span>
           </div>
@@ -292,23 +292,23 @@ export default function PlayPhase({ state, dispatch, ACTIONS, onComplete }) {
 
         {/* MCQ — tap option = immediate answer check */}
         {currentQ.inputType === 'mcq' && (
-          <div style={{ display:'grid', gridTemplateColumns:'repeat(2,1fr)', gap:9 }}>
+          <div style={{ display:'grid', gridTemplateColumns:'repeat(2,1fr)', gap:10 }}>
             {currentQ.options.map(opt => {
-              let bg = 'rgba(255,255,255,0.04)';
-              let border = 'rgba(255,255,255,0.12)';
-              if (hasAnswered && opt === currentQ.answer) { bg = 'rgba(34,197,94,0.22)'; border = '#22c55e'; }
-              if (hasAnswered && opt === lastAnswer && !isCorrect) { bg = 'rgba(239,68,68,0.22)'; border = '#ef4444'; }
+              let bg = 'rgba(255,255,255,0.08)';
+              let border = 'rgba(255,255,255,0.2)';
+              if (hasAnswered && opt === currentQ.answer) { bg = 'rgba(34,197,94,0.3)'; border = '#22c55e'; }
+              if (hasAnswered && opt === lastAnswer && !isCorrect) { bg = 'rgba(239,68,68,0.3)'; border = '#ef4444'; }
               const optShapeId = getShapeId(opt);
               return (
                 <button key={opt}
                   onClick={() => !hasAnswered && submitAnswer(opt)}
                   disabled={hasAnswered}
-                  style={{ background:bg, border:`1.5px solid ${border}`, borderRadius:14,
-                    padding:'10px 8px', cursor:hasAnswered?'default':'pointer',
-                    color:'#fff', textAlign:'center', fontFamily:'Fredoka One', fontSize:13,
-                    transition:'all 0.2s',
-                    display:'flex', flexDirection:'column', alignItems:'center', gap:4 }}>
-                  {optShapeId && <ShapeSVG shapeId={optShapeId} size={32} />}
+                  style={{ background:bg, border:`2px solid ${border}`, borderRadius:16,
+                    padding:'12px 10px', cursor:hasAnswered?'default':'pointer',
+                    color:'#ffffff', textAlign:'center', fontFamily:'Fredoka One, sans-serif', fontWeight:900, fontSize:15,
+                    transition:'all 0.2s', boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
+                    display:'flex', flexDirection:'column', alignItems:'center', gap:6 }}>
+                  {optShapeId && <ShapeSVG shapeId={optShapeId} size={36} />}
                   {opt}
                 </button>
               );
@@ -318,7 +318,7 @@ export default function PlayPhase({ state, dispatch, ACTIONS, onComplete }) {
       </div>
 
       {/* Hint button */}
-      <div style={{ display:'flex', justifyContent:'flex-end', width:'100%', maxWidth:560, flexShrink:0 }}>
+      <div style={{ display:'flex', justifyContent:'flex-end', width:'100%', maxWidth:580, flexShrink:0 }}>
         <button onClick={() => {
           if (!showHint) {
             setShowHint(true);
@@ -327,11 +327,11 @@ export default function PlayPhase({ state, dispatch, ACTIONS, onComplete }) {
             if (state.audioEnabled) narrate([say(currentQ.hint)]);
           }
         }} disabled={showHint} style={{
-          background: showHint ? 'transparent' : 'rgba(250,204,21,0.15)',
-          border: showHint ? '1.5px solid rgba(255,255,255,0.1)' : '1.5px solid rgba(250,204,21,0.35)',
-          borderRadius:18, padding:'5px 14px',
-          color: showHint ? 'rgba(255,255,255,0.3)' : '#facc15',
-          fontFamily:'Fredoka One', fontSize:11, cursor: showHint ? 'default' : 'pointer' }}>
+          background: showHint ? 'transparent' : 'rgba(250,204,21,0.2)',
+          border: showHint ? '1.5px solid rgba(255,255,255,0.15)' : '2px solid rgba(250,204,21,0.5)',
+          borderRadius:20, padding:'6px 16px',
+          color: showHint ? 'rgba(255,255,255,0.4)' : '#facc15',
+          fontFamily:'Fredoka One, sans-serif', fontWeight:900, fontSize:12, cursor: showHint ? 'default' : 'pointer' }}>
           💡 Hint
         </button>
       </div>
@@ -340,23 +340,23 @@ export default function PlayPhase({ state, dispatch, ACTIONS, onComplete }) {
       {showPopup && (
         <div style={{ position:'fixed', inset:0, zIndex:300,
           display:'flex', alignItems:'center', justifyContent:'center',
-          background:'rgba(0,0,0,0.35)', pointerEvents:'none' }}>
+          background:'rgba(0,0,0,0.45)', pointerEvents:'none' }}>
           <div style={{ background: isCorrect ? '#22c55e' : '#ef4444',
-            borderRadius:24, padding:'28px 32px',
+            borderRadius:24, padding:'28px 36px',
             display:'flex', flexDirection:'column', alignItems:'center', gap:10,
-            boxShadow:'0 16px 48px rgba(0,0,0,0.55)',
+            boxShadow:'0 16px 48px rgba(0,0,0,0.65)',
             animation:'popIn 0.25s cubic-bezier(0.175,0.885,0.32,1.275)',
-            minWidth:220, maxWidth:300 }}>
-            <span style={{ fontSize:52 }}>{isCorrect ? '🎉' : '😢'}</span>
-            <span style={{ fontFamily:'Fredoka One', fontSize:22, color:'#fff' }}>
+            minWidth:240, maxWidth:320 }}>
+            <span style={{ fontSize:56 }}>{isCorrect ? '🎉' : '😢'}</span>
+            <span style={{ fontFamily:'Fredoka One, sans-serif', fontWeight:900, fontSize:24, color:'#fff' }}>
               {isCorrect ? 'Correct!' : 'Not quite!'}
             </span>
             {!isCorrect && (
               <div style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:6 }}>
                 {getShapeId(String(currentQ.answer)) && (
-                  <ShapeSVG shapeId={getShapeId(String(currentQ.answer))} size={44} />
+                  <ShapeSVG shapeId={getShapeId(String(currentQ.answer))} size={48} />
                 )}
-                <span style={{ fontFamily:'Nunito', fontSize:13, color:'rgba(255,255,255,0.95)',
+                <span style={{ fontFamily:'Fredoka One, sans-serif', fontWeight:900, fontSize:14, color:'#ffffff',
                   textAlign:'center', lineHeight:1.4 }}>
                   Answer: <strong>{currentQ.answer}</strong>
                 </span>

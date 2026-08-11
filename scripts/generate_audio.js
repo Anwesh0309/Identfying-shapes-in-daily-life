@@ -3,7 +3,7 @@ const path = require('path');
 
 const VOICE_ID = 'Xb7hH8MSUJpSbSDYk0k2'; // ElevenLabs Alice
 const MODEL = 'eleven_multilingual_v2';
-const API_KEY = 'sk_7ef27dccb32144843f8ee5068dfd4223a85326c56c14b00a';
+const API_KEY = 'sk_0af55b573c54fe31387443150c45624fed865ccc914cd486';
 
 const AUDIO_DIR = path.join(__dirname, '..', 'public', 'assets', 'audio');
 
