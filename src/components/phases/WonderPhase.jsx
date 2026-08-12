@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { CheckCircle, Sparkles } from 'lucide-react';
-import { narrate, say, sfxCorrect, sfxLevelUp } from '../../utils/audio.js';
-import { wonderNarration } from '../../utils/narration.js';
+import { narrate, say, stopNarration, sfxCorrect, sfxLevelUp } from '../../utils/audio.js';
+import { wonderSection1Narration, wonderSection2Narration } from '../../utils/narration.js';
 import { shapes } from '../../data/shapeData.js';
 import wonderRoomBg from '../../assets/wonder_room_bg.png';
 import wonderIntroBg from '../../assets/wonder_intro_bg.png';
@@ -82,23 +82,17 @@ export default function WonderPhase({ state, onComplete }) {
   const [selectedTarget, setSelectedTarget] = useState(null);
 
   useEffect(() => {
+    stopNarration();
     if (state.audioEnabled) {
       if (wonderSubState === 'intro') {
-        // Narrate the wonder intro narration, then read the visible card text
-        narrate([
-          ...wonderNarration,
-          say('Where can we find circles, triangles, and cylinders around us? Can you spot shapes in daily life?'),
-          say('Shapes are hiding all around us in the playground!'),
-        ]);
+        narrate(wonderSection1Narration);
       } else {
-        // Narrate exactly the text shown on the explore screen header
-        narrate([
-          say('Shape Discovery Scene!'),
-          say('Find all 6 glowing shapes in the scene!'),
-          say('Tap on the glowing circles to discover each shape and its properties!'),
-        ]);
+        narrate(wonderSection2Narration);
       }
     }
+    return () => {
+      stopNarration();
+    };
   }, [state.audioEnabled, wonderSubState]);
 
   const handleTargetClick = (target) => {
@@ -246,7 +240,7 @@ export default function WonderPhase({ state, onComplete }) {
               margin: 0,
             }}
           >
-            🔍 Shapes are hiding all around us in the playground!
+            🔍 Shapes are hiding all around us in the playground! Tap Let's Discover to find them!
           </div>
         </div>
 

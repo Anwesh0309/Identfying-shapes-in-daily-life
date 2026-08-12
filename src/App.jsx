@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useGameState } from './hooks/useGameState.js';
+import { setAudioEnabled, stopNarration } from './utils/audio.js';
 import FloatingBg from './components/shared/FloatingBg.jsx';
 import Header from './components/shared/Header.jsx';
 import BadgeToast from './components/shared/BadgeToast.jsx';
@@ -19,11 +20,20 @@ export default function App() {
   const { state, dispatch, ACTIONS } = useGameState();
   const [reflection, setReflection] = useState(null);
 
+  // Sync state.audioEnabled with audio utility engine
+  useEffect(() => {
+    setAudioEnabled(state.audioEnabled);
+    if (!state.audioEnabled) {
+      stopNarration();
+    }
+  }, [state.audioEnabled]);
+
   // All phases unlocked per prompt requirement
   const canAccessPhase = () => true;
 
   // Safe phase transition
   const goToPhase = (phase) => {
+    stopNarration();
     // Reset simulation state whenever entering simulate
     if (phase === 'simulate') {
       dispatch({ type: ACTIONS.RESET_SIM_STATIONS });
@@ -33,6 +43,7 @@ export default function App() {
 
   // Home navigation — always allowed (goes to intro)
   const handleHome = () => {
+    stopNarration();
     dispatch({ type: ACTIONS.SET_PHASE, payload: 'intro' });
   };
 

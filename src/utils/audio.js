@@ -25,24 +25,13 @@ const isSilence = (text) => !text || !/[a-zA-Z0-9]/.test(text);
 // ── Public API ──
 
 export function setAudioEnabled(val) {
-  const wasEnabled = _audioEnabled;
   _audioEnabled = val;
 
   if (!val) {
-    // Muting: stop currently playing sounds
-    if (currentAudio && !currentAudio.paused) {
-      currentAudio.pause();
-    }
-    try {
-      window.speechSynthesis.cancel();
-    } catch (e) {}
-  } else {
-    // Unmuting: resume from saved segment
-    if (pausedSegments) {
-      const { segments, index } = pausedSegments;
-      pausedSegments = null;
-      _narrateFrom(segments, index);
-    }
+    // Muting: stop currently playing sounds immediately
+    activeQueueId = null;
+    pausedSegments = null;
+    _stopCurrent();
   }
 }
 

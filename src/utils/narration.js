@@ -6,11 +6,18 @@ export const introNarration = [
   say('Click Start to begin our shape adventure!')
 ];
 
-export const wonderNarration = [
-  say('Look at this playground scene! There are shapes hiding everywhere!'),
-  say('Can you find all six glowing shapes?'),
-  say('Tap on them to see their names and discover what makes them special!')
+export const wonderSection1Narration = [
+  say('Hmm... I wonder... Where can we find circles, triangles, and cylinders around us? Can you spot shapes in daily life?'),
+  say('Shapes are hiding all around us in the playground! Tap Let\'s Discover to find them!')
 ];
+
+export const wonderSection2Narration = [
+  say('Shape Discovery Scene! Look at this playground scene! There are shapes hiding everywhere!'),
+  say('Find all six glowing shapes in the scene!'),
+  say('Tap on the glowing circles to discover each shape and its properties!')
+];
+
+export const wonderNarration = wonderSection1Narration;
 
 export const storyPanelNarration = [
   // Panel 1
