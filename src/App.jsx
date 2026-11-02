@@ -28,9 +28,11 @@ export default function App() {
     }
   }, [state.audioEnabled]);
 
-  // Stop any audio immediately on any phase change (prevents overlapping and skipped audio)
+  // Clean up any lingering narration when leaving a phase (prevents overlapping and skipped audio)
   useEffect(() => {
-    stopNarration();
+    return () => {
+      stopNarration();
+    };
   }, [state.phase]);
 
   // All phases unlocked per prompt requirement

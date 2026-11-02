@@ -112,12 +112,16 @@ async function _narrateFrom(segments, mySession) {
       audio.onended = cleanup;
       audio.onerror = cleanup;
       audio.src = url;
+      try {
+        audio.load();
+      } catch (e) {}
       audio.currentTime = 0;
 
       const playPromise = audio.play();
       if (playPromise !== undefined) {
-        playPromise.catch(() => {
+        playPromise.catch((err) => {
           // Play was interrupted or blocked
+          console.warn('Audio playback info:', err?.message || err);
           cleanup();
         });
       }
@@ -140,7 +144,7 @@ function _stopCurrent() {
     try {
       audio.pause();
       audio.currentTime = 0;
-      audio.removeAttribute('src');
+      audio.src = '';
       audio.onended = null;
       audio.onerror = null;
     } catch (e) {}
@@ -174,7 +178,8 @@ async function getAudioUrl(text, style = 'statement') {
   
   // Check static audio map first
   if (audioMap && audioMap[slug]) {
-    return `/assets/audio/${audioMap[slug]}`;
+    const base = (import.meta.env?.BASE_URL || '/').replace(/\/$/, '');
+    return `${base}/assets/audio/${audioMap[slug]}`;
   }
 
   // Check runtime memory cache

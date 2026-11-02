@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { Star, RotateCcw, Home, Trophy, Sparkles } from 'lucide-react';
 import { narrate, say, stopNarration, sfxLevelUp } from '../../utils/audio.js';
 import { calcStars } from '../../utils/scoring.js';
@@ -45,21 +45,34 @@ export default function ReflectPhase({ state, onComplete }) {
 
   const simCompletedCount = (state.simStationsComplete || []).filter(Boolean).length;
 
+  const timerRef = useRef(null);
+
   useEffect(() => {
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+      timerRef.current = null;
+    }
     stopNarration();
     sfxLevelUp();
+
     if (state.audioEnabled) {
-      if (totalAnswered > 0) {
-        narrate([
-          say('Congratulations! You completed the learning phases!'),
-          say('Now, take a look around your own room.'),
-          say('Can you write down one flat 2D shape and one solid 3D shape that you see right now?')
-        ]);
-      } else {
-        narrate([say('Welcome to the Reflect Phase! You have completed all 3 simulation stations. Try Practice mode to earn your high score!')]);
-      }
+      timerRef.current = setTimeout(() => {
+        if (totalAnswered > 0) {
+          narrate([
+            say('Congratulations! You completed the learning phases!'),
+            say('Now, take a look around your own room.'),
+            say('Can you write down one flat 2D shape and one solid 3D shape that you see right now?')
+          ]);
+        } else {
+          narrate([say('Welcome to the Reflect Phase! You have completed all 3 simulation stations. Try Practice mode to earn your high score!')]);
+        }
+      }, 150);
     }
     return () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+        timerRef.current = null;
+      }
       stopNarration();
     };
   }, []);

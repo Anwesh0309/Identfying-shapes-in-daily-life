@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Sparkles, CheckCircle, RotateCw, RefreshCw } from 'lucide-react';
 import { narrate, say, stopNarration, sfxCorrect, sfxLevelUp } from '../../utils/audio.js';
 import { simulateStationNarration } from '../../utils/narration.js';
@@ -65,16 +65,29 @@ export default function SimulatePhase({ state, onStationComplete, onComplete }) 
   // Station C state
   const [huntFound, setHuntFound] = useState([]);
 
+  const timerRef = useRef(null);
+
   // Narrate on station change and cleanup on unmount/station switch
   useEffect(() => {
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+      timerRef.current = null;
+    }
     stopNarration();
+
     if (state.audioEnabled) {
       const nar = simulateStationNarration[stationId];
       if (nar) {
-        narrate(nar);
+        timerRef.current = setTimeout(() => {
+          narrate(nar);
+        }, 150);
       }
     }
     return () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+        timerRef.current = null;
+      }
       stopNarration();
     };
   }, [stationId, state.audioEnabled]);
@@ -82,6 +95,10 @@ export default function SimulatePhase({ state, onStationComplete, onComplete }) 
   // Overall unmount cleanup
   useEffect(() => {
     return () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+        timerRef.current = null;
+      }
       stopNarration();
     };
   }, []);

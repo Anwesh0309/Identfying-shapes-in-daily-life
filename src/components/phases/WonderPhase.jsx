@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { CheckCircle, Sparkles } from 'lucide-react';
 import { narrate, say, stopNarration, sfxCorrect, sfxLevelUp } from '../../utils/audio.js';
 import { wonderSection1Narration, wonderSection2Narration } from '../../utils/narration.js';
@@ -80,20 +80,44 @@ export default function WonderPhase({ state, onComplete }) {
   const [wonderSubState, setWonderSubState] = useState('intro'); // 'intro' or 'explore'
   const [discovered, setDiscovered] = useState([]);
   const [selectedTarget, setSelectedTarget] = useState(null);
+  const narrateTimerRef = useRef(null);
 
   useEffect(() => {
-    stopNarration();
-    if (state.audioEnabled) {
-      if (wonderSubState === 'intro') {
-        narrate(wonderSection1Narration);
-      } else {
-        narrate(wonderSection2Narration);
-      }
+    if (narrateTimerRef.current) {
+      clearTimeout(narrateTimerRef.current);
+      narrateTimerRef.current = null;
     }
+    stopNarration();
+
+    if (state.audioEnabled) {
+      narrateTimerRef.current = setTimeout(() => {
+        if (wonderSubState === 'intro') {
+          narrate(wonderSection1Narration);
+        } else {
+          narrate(wonderSection2Narration);
+        }
+      }, 150);
+    }
+
     return () => {
+      if (narrateTimerRef.current) {
+        clearTimeout(narrateTimerRef.current);
+        narrateTimerRef.current = null;
+      }
       stopNarration();
     };
   }, [state.audioEnabled, wonderSubState]);
+
+  // Overall unmount cleanup
+  useEffect(() => {
+    return () => {
+      if (narrateTimerRef.current) {
+        clearTimeout(narrateTimerRef.current);
+        narrateTimerRef.current = null;
+      }
+      stopNarration();
+    };
+  }, []);
 
   const handleTargetClick = (target) => {
     setSelectedTarget(target);
@@ -110,8 +134,14 @@ export default function WonderPhase({ state, onComplete }) {
     }
 
     if (state.audioEnabled) {
+      if (narrateTimerRef.current) {
+        clearTimeout(narrateTimerRef.current);
+        narrateTimerRef.current = null;
+      }
       stopNarration();
-      narrate([say(target.narrationText)]);
+      narrateTimerRef.current = setTimeout(() => {
+        narrate([say(target.narrationText)]);
+      }, 120);
     }
   };
 

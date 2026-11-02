@@ -243,3 +243,4 @@ main().catch(err => {
   console.error('Fatal error in generator:', err);
   process.exit(1);
 });
+

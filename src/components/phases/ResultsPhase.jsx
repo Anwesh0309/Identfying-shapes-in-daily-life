@@ -1,19 +1,32 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { Trophy, Star, Sparkles, LogOut, RotateCcw } from 'lucide-react';
 import { narrate, say, stopNarration, sfxLevelUp } from '../../utils/audio.js';
 import { BADGES } from '../../utils/badgeEngine.js';
 
 export default function ResultsPhase({ state, onReset, onClose, reflectionData }) {
+  const timerRef = useRef(null);
+
   useEffect(() => {
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+      timerRef.current = null;
+    }
     stopNarration();
     sfxLevelUp();
+
     if (state.audioEnabled) {
-      narrate([
-        say('Incredible work! You completed the geometry lesson and earned your badges!'),
-        say('You are now a certified Geometry Master! Share your badges with your classmates!')
-      ]);
+      timerRef.current = setTimeout(() => {
+        narrate([
+          say('Incredible work! You completed the geometry lesson and earned your badges!'),
+          say('You are now a certified Geometry Master! Share your badges with your classmates!')
+        ]);
+      }, 150);
     }
     return () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+        timerRef.current = null;
+      }
       stopNarration();
     };
   }, [state.audioEnabled]);
