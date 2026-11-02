@@ -65,7 +65,7 @@ export default function SimulatePhase({ state, onStationComplete, onComplete }) 
   // Station C state
   const [huntFound, setHuntFound] = useState([]);
 
-  // Narrate on station change
+  // Narrate on station change and cleanup on unmount/station switch
   useEffect(() => {
     stopNarration();
     if (state.audioEnabled) {
@@ -74,7 +74,17 @@ export default function SimulatePhase({ state, onStationComplete, onComplete }) 
         narrate(nar);
       }
     }
+    return () => {
+      stopNarration();
+    };
   }, [stationId, state.audioEnabled]);
+
+  // Overall unmount cleanup
+  useEffect(() => {
+    return () => {
+      stopNarration();
+    };
+  }, []);
 
   // Mark station complete helpers
   const markStationComplete = (index) => {
@@ -93,6 +103,7 @@ export default function SimulatePhase({ state, onStationComplete, onComplete }) 
       // Station C (index=2): stay on C, show Go to Practice button
 
       if (state.audioEnabled) {
+        stopNarration();
         const allComplete = updated.every(s => s);
         if (allComplete) {
           narrate([say('Fantastic! You completed all three simulation stations! Click Go to Practice below.')]);
@@ -127,7 +138,8 @@ export default function SimulatePhase({ state, onStationComplete, onComplete }) 
     } else {
       // Wrong placement effect
       if (state.audioEnabled) {
-        narrate([say(`No, a ${shapes[selectedShape].name} does not belong in the ${zone.label} zone. Let us look at its properties.`)]);
+        stopNarration();
+        narrate([say(`No, a ${shapes[selectedShape].name} does not belong in this zone. Let us look at its properties.`)]);
       }
     }
   };
@@ -152,6 +164,7 @@ export default function SimulatePhase({ state, onStationComplete, onComplete }) 
       });
     } else {
       if (state.audioEnabled) {
+        stopNarration();
         narrate([say(`Not quite! A ${shapes[activeSolidId].name} does not match that object. Try again!`)]);
       }
     }
@@ -167,6 +180,7 @@ export default function SimulatePhase({ state, onStationComplete, onComplete }) 
     sfxCorrect();
 
     if (state.audioEnabled) {
+      stopNarration();
       narrate([say(`You found the ${item.label}! It is a ${shapes[item.shapeId].name}!`)]);
     }
 

@@ -28,6 +28,11 @@ export default function App() {
     }
   }, [state.audioEnabled]);
 
+  // Stop any audio immediately on any phase change (prevents overlapping and skipped audio)
+  useEffect(() => {
+    stopNarration();
+  }, [state.phase]);
+
   // All phases unlocked per prompt requirement
   const canAccessPhase = () => true;
 

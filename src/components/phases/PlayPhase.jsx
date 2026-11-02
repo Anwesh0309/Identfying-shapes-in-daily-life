@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { Star, Sparkles } from 'lucide-react';
 import { narrate, say, stopNarration, sfxCorrect, sfxWrong, sfxLevelUp } from '../../utils/audio.js';
 import { calcXP } from '../../utils/scoring.js';
@@ -82,8 +82,9 @@ function getCategoryLabel(type) {
 }
 
 export default function PlayPhase({ state, dispatch, ACTIONS, onComplete }) {
+  // Present all 100 questions organized across the 10 worlds with options randomized
   const [questions] = useState(() =>
-    shuffle(questionBank).slice(0, 100).map(q => ({
+    questionBank.map(q => ({
       ...q,
       options: shuffle(q.options),
     }))
@@ -99,6 +100,26 @@ export default function PlayPhase({ state, dispatch, ACTIONS, onComplete }) {
   const [isFinished, setIsFinished] = useState(false);
   const [lastAnswer, setLastAnswer] = useState('');
 
+  // Timers tracked for strict overlap prevention
+  const narrateTimerRef = useRef(null);
+  const feedbackTimerRef = useRef(null);
+  const advanceTimerRef = useRef(null);
+
+  const clearAllTimers = useCallback(() => {
+    if (narrateTimerRef.current) {
+      clearTimeout(narrateTimerRef.current);
+      narrateTimerRef.current = null;
+    }
+    if (feedbackTimerRef.current) {
+      clearTimeout(feedbackTimerRef.current);
+      feedbackTimerRef.current = null;
+    }
+    if (advanceTimerRef.current) {
+      clearTimeout(advanceTimerRef.current);
+      advanceTimerRef.current = null;
+    }
+  }, []);
+
   const currentQ = questions[qIndex];
   const progressPercent = (qIndex / 100) * 100;
 
@@ -107,15 +128,34 @@ export default function PlayPhase({ state, dispatch, ACTIONS, onComplete }) {
   // The shape shown in hint
   const hintShapeId = currentQ ? getShapeId(currentQ.hint) : null;
 
+  // Cleanup on unmount (e.g. if user skips phase)
   useEffect(() => {
-    if (currentQ && state.audioEnabled) {
+    return () => {
+      clearAllTimers();
       stopNarration();
-      setTimeout(() => narrate([say(currentQ.text)]), 200);
+    };
+  }, [clearAllTimers]);
+
+  // Narrate on-screen question only
+  useEffect(() => {
+    clearAllTimers();
+    stopNarration();
+    if (currentQ && state.audioEnabled) {
+      narrateTimerRef.current = setTimeout(() => {
+        narrate([say(currentQ.text)]);
+      }, 200);
     }
-  }, [qIndex, state.audioEnabled]);
+    return () => {
+      clearAllTimers();
+      stopNarration();
+    };
+  }, [qIndex, state.audioEnabled, currentQ, clearAllTimers]);
 
   const submitAnswer = useCallback((answerVal) => {
     if (hasAnswered) return;
+    clearAllTimers();
+    stopNarration();
+
     const match = String(answerVal).trim().toLowerCase() === String(currentQ.answer).trim().toLowerCase();
     setHasAnswered(true);
     setIsCorrect(match);
@@ -128,15 +168,20 @@ export default function PlayPhase({ state, dispatch, ACTIONS, onComplete }) {
       const xp = calcXP(1, hintsUsed, state.streak);
       setSessionXP(s => s + xp);
       dispatch({ type: ACTIONS.ANSWER_CORRECT, payload: { attemptNumber: 1, hintsUsed } });
-      if (state.audioEnabled) setTimeout(() => narrate([say('Good, keep it up!')]), 100);
+      if (state.audioEnabled) {
+        feedbackTimerRef.current = setTimeout(() => narrate([say('Good, keep it up!')]), 120);
+      }
     } else {
       sfxWrong();
       dispatch({ type: ACTIONS.ANSWER_INCORRECT });
-      if (state.audioEnabled) setTimeout(() => narrate([say("Not quite, let's try in the next question!")]), 100);
+      if (state.audioEnabled) {
+        feedbackTimerRef.current = setTimeout(() => narrate([say("Not quite, let's try in the next question!")]), 120);
+      }
     }
 
-    // Auto-advance after 1 second
-    setTimeout(() => {
+    // Auto-advance after 1.1s
+    advanceTimerRef.current = setTimeout(() => {
+      clearAllTimers();
       stopNarration();
       setShowPopup(false);
       setHasAnswered(false);
@@ -156,8 +201,8 @@ export default function PlayPhase({ state, dispatch, ACTIONS, onComplete }) {
         }
         return next;
       });
-    }, 1000);
-  }, [hasAnswered, currentQ, hintsUsed, state, dispatch, ACTIONS]);
+    }, 1100);
+  }, [hasAnswered, currentQ, hintsUsed, state, dispatch, ACTIONS, clearAllTimers]);
 
   // ── Finished screen ──
   if (isFinished) {
@@ -219,7 +264,7 @@ export default function PlayPhase({ state, dispatch, ACTIONS, onComplete }) {
         color:'#fff', fontFamily:'Fredoka One, sans-serif', fontWeight:900, fontSize:14,
         display:'flex', alignItems:'center', gap:8,
         boxShadow:'0 4px 16px rgba(124,58,237,0.5)', flexShrink:0 }}>
-        🎮 Shape Practice
+        🎮 World {currentQ ? currentQ.world : 1}: {currentQ ? currentQ.worldName : 'Shape Practice'}
       </div>
 
       {/* Stats row */}
@@ -324,6 +369,8 @@ export default function PlayPhase({ state, dispatch, ACTIONS, onComplete }) {
             setShowHint(true);
             setHintsUsed(h => h + 1);
             dispatch({ type: ACTIONS.USE_HINT });
+            clearAllTimers();
+            stopNarration();
             if (state.audioEnabled) narrate([say(currentQ.hint)]);
           }
         }} disabled={showHint} style={{

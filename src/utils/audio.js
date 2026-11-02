@@ -14,10 +14,17 @@ const STYLE_SETTINGS = {
 
 // ── Internal State ──
 let _audioEnabled = true;
-let activeQueueId = null;   // Symbol ID for currently running queue
-let currentAudio = null;    // Current HTMLAudioElement playing
-let pausedSegments = null;  // { segments, index } saved when muted mid-queue
+let currentSessionId = 0;        // Monotonic session counter for cancellation
+let globalAudioElement = null;   // Single global HTMLAudioElement instance for entire app
+let currentAudioResolver = null; // Resolver for currently awaiting audio promise
 const audioCache = new Map();
+
+function getGlobalAudio() {
+  if (!globalAudioElement && typeof window !== 'undefined') {
+    globalAudioElement = new Audio();
+  }
+  return globalAudioElement;
+}
 
 // Helper to check if text is empty or just punctuation
 const isSilence = (text) => !text || !/[a-zA-Z0-9]/.test(text);
@@ -29,52 +36,33 @@ export function setAudioEnabled(val) {
 
   if (!val) {
     // Muting: stop currently playing sounds immediately
-    activeQueueId = null;
-    pausedSegments = null;
+    currentSessionId++;
     _stopCurrent();
   }
 }
 
 export function stopNarration() {
-  activeQueueId = null;
-  pausedSegments = null;
+  currentSessionId++;
   _stopCurrent();
-  try {
-    window.speechSynthesis.cancel();
-  } catch (e) {}
 }
 
 export async function narrate(segments) {
   if (!segments || segments.length === 0) return;
   
-  // Stop existing narrations
-  activeQueueId = null;
-  pausedSegments = null;
+  // Stop existing narrations and advance session token
+  const mySession = ++currentSessionId;
   _stopCurrent();
-  try {
-    window.speechSynthesis.cancel();
-  } catch (e) {}
 
   if (!_audioEnabled) return;
 
-  await _narrateFrom(segments, 0);
+  await _narrateFrom(segments, mySession);
 }
 
 // ── Internal Helpers ──
 
-async function _narrateFrom(segments, startIndex) {
-  const myId = Symbol();
-  activeQueueId = myId;
-
-  for (let i = startIndex; i < segments.length; i++) {
-    if (activeQueueId !== myId) break;
-
-    // Check if muted mid-loop
-    if (!_audioEnabled) {
-      pausedSegments = { segments, index: i };
-      _stopCurrent();
-      return;
-    }
+async function _narrateFrom(segments, mySession) {
+  for (let i = 0; i < segments.length; i++) {
+    if (mySession !== currentSessionId || !_audioEnabled) break;
 
     const { text, style = 'statement' } = segments[i];
     if (isSilence(text)) continue;
@@ -82,10 +70,14 @@ async function _narrateFrom(segments, startIndex) {
     const url = await getAudioUrl(text, style);
     
     // Strict check after async fetch
-    if (activeQueueId !== myId || !_audioEnabled) {
-      if (!_audioEnabled) pausedSegments = { segments, index: i };
+    if (mySession !== currentSessionId || !_audioEnabled) {
       _stopCurrent();
       return;
+    }
+
+    if (!url) {
+      // Missing audio URL: never fall back to conflicting speech synthesis
+      continue;
     }
 
     // Preload next segment to eliminate delay
@@ -99,84 +91,65 @@ async function _narrateFrom(segments, startIndex) {
     // Always ensure prior audio is stopped before starting a new clip
     _stopCurrent();
 
-    if (!url) {
-      // Fallback: Web Speech API
-      await new Promise(resolve => {
-        if (activeQueueId !== myId || !_audioEnabled) return resolve();
-        
-        try {
-          if ('speechSynthesis' in window) {
-            window.speechSynthesis.cancel();
-          }
-          const utterance = new SpeechSynthesisUtterance(text);
-          const voices = window.speechSynthesis.getVoices();
-          const enVoice = voices.find(v => v.lang.startsWith('en') && v.name.includes('Google')) ||
-                          voices.find(v => v.lang.startsWith('en') && v.name.includes('Natural')) ||
-                          voices.find(v => v.lang.startsWith('en')) ||
-                          voices[0];
-          
-          if (enVoice) utterance.voice = enVoice;
-          utterance.rate = 0.95; // child friendly speed
-          utterance.pitch = 1.05; // slightly higher pitch
-          
-          const onDone = () => {
-            utterance.onend = null;
-            utterance.onerror = null;
-            resolve();
-          };
+    // Play pre-generated or cached ElevenLabs URL using singleton Audio
+    await new Promise(resolve => {
+      if (mySession !== currentSessionId || !_audioEnabled) return resolve();
 
-          utterance.onend = onDone;
-          utterance.onerror = onDone;
-          
-          window.speechSynthesis.speak(utterance);
-        } catch (err) {
-          resolve();
+      const audio = getGlobalAudio();
+      if (!audio) return resolve();
+
+      currentAudioResolver = resolve;
+      
+      const cleanup = () => {
+        audio.onended = null;
+        audio.onerror = null;
+        if (currentAudioResolver === resolve) {
+          currentAudioResolver = null;
         }
-      });
-    } else {
-      // Play pre-generated or cached ElevenLabs URL
-      await new Promise(resolve => {
-        if (activeQueueId !== myId || !_audioEnabled) return resolve();
+        resolve();
+      };
 
-        const audio = new Audio(url);
-        currentAudio = audio;
-        
-        const cleanup = () => {
-          audio.onended = null;
-          audio.onerror = null;
-          if (currentAudio === audio) currentAudio = null;
-          resolve();
-        };
+      audio.onended = cleanup;
+      audio.onerror = cleanup;
+      audio.src = url;
+      audio.currentTime = 0;
 
-        audio.onended = cleanup;
-        audio.onerror = cleanup;
-        audio.play().catch(() => cleanup());
-      });
-    }
+      const playPromise = audio.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(() => {
+          // Play was interrupted or blocked
+          cleanup();
+        });
+      }
+    });
 
-    if (activeQueueId !== myId) {
+    if (mySession !== currentSessionId) {
       _stopCurrent();
       break;
     }
   }
 
-  if (activeQueueId === myId) {
-    activeQueueId = null;
-    currentAudio = null;
+  if (mySession === currentSessionId) {
+    currentAudioResolver = null;
   }
 }
 
 function _stopCurrent() {
-  if (currentAudio) {
+  const audio = getGlobalAudio();
+  if (audio) {
     try {
-      currentAudio.pause();
-      currentAudio.currentTime = 0;
-      currentAudio.onended = null;
-      currentAudio.onerror = null;
-      currentAudio.removeAttribute('src');
-      currentAudio.load();
+      audio.pause();
+      audio.currentTime = 0;
+      audio.removeAttribute('src');
+      audio.onended = null;
+      audio.onerror = null;
     } catch (e) {}
-    currentAudio = null;
+  }
+  if (currentAudioResolver) {
+    try {
+      currentAudioResolver();
+    } catch (e) {}
+    currentAudioResolver = null;
   }
   try {
     if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
@@ -210,7 +183,7 @@ async function getAudioUrl(text, style = 'statement') {
   }
 
   // Dynamic API call fallback via serverless proxy or directly if key is local
-  const apiKey = import.meta.env.VITE_ELEVENLABS_API_KEY || 'sk_0af55b573c54fe31387443150c45624fed865ccc914cd486';
+  const apiKey = import.meta.env.VITE_ELEVENLABS_API_KEY || 'sk_1477a0b0a31e89b834b1e17ca4468c02a6e8bf554f621c5a';
   if (!apiKey) return null;
 
   try {

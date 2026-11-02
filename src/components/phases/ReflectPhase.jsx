@@ -50,11 +50,18 @@ export default function ReflectPhase({ state, onComplete }) {
     sfxLevelUp();
     if (state.audioEnabled) {
       if (totalAnswered > 0) {
-        narrate([say(`Score update! You answered ${totalCorrect} out of ${totalAnswered} questions correctly, giving you a score of ${pct} percent! ${getMascotMessage(pct, totalAnswered)}`)]);
+        narrate([
+          say('Congratulations! You completed the learning phases!'),
+          say('Now, take a look around your own room.'),
+          say('Can you write down one flat 2D shape and one solid 3D shape that you see right now?')
+        ]);
       } else {
-        narrate([say(`Welcome to the Reflect Phase! You have completed all 3 simulation stations. Try Practice mode to earn your high score!`)]);
+        narrate([say('Welcome to the Reflect Phase! You have completed all 3 simulation stations. Try Practice mode to earn your high score!')]);
       }
     }
+    return () => {
+      stopNarration();
+    };
   }, []);
 
   const handlePlayAgain = () => onComplete({ replay: true });

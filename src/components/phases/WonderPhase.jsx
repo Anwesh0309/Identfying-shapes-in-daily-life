@@ -110,6 +110,7 @@ export default function WonderPhase({ state, onComplete }) {
     }
 
     if (state.audioEnabled) {
+      stopNarration();
       narrate([say(target.narrationText)]);
     }
   };

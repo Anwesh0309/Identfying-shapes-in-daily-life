@@ -13,10 +13,22 @@ export default function StoryPhase({ state, onComplete }) {
       const segment = storyPanelNarration[panelIndex];
       if (segment) {
         const timer = setTimeout(() => narrate(segment), 150);
-        return () => clearTimeout(timer);
+        return () => {
+          clearTimeout(timer);
+          stopNarration();
+        };
       }
     }
+    return () => {
+      stopNarration();
+    };
   }, [panelIndex, state.audioEnabled]);
+
+  useEffect(() => {
+    return () => {
+      stopNarration();
+    };
+  }, []);
 
   const handleNext = () => {
     if (panelIndex < storyPanels.length - 1) setPanelIndex(p => p + 1);

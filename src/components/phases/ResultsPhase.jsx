@@ -13,6 +13,9 @@ export default function ResultsPhase({ state, onReset, onClose, reflectionData }
         say('You are now a certified Geometry Master! Share your badges with your classmates!')
       ]);
     }
+    return () => {
+      stopNarration();
+    };
   }, [state.audioEnabled]);
 
   const earnedBadges = BADGES.filter(b => state.badges.includes(b.id));
